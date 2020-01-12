@@ -1,0 +1,29 @@
+name: Publish
+on:
+  release:
+    types: [published]
+jobs:
+  publish:
+    name: Publish
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get Ruby Gem Cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-gem-
+      - name: Install Ruby Gem
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: make gem-install
+      - name: Upload Zip
+        run: make upload-zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_RELEASE_ID: ${{ github.event.release.id }}
+      - name: CocoaPods Trunk Push
+        run: make pod-trunk-push
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}

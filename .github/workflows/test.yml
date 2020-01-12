@@ -1,0 +1,40 @@
+name: GitHub Actions
+on: push
+jobs:
+  linux:
+    name: Test on Linux
+    runs-on: ubuntu-18.04
+    container:
+      image: swift:5.1
+    steps:
+      - uses: actions/checkout@v2
+      - name: Show Environments
+        run: swift --version
+      - name: Validate Source Code
+        run: make autocorrect && [ -z "$(git status --porcelain)" ]
+      - name: Run Test
+        run: make test
+  macOS:
+    name: Test on macOS
+    runs-on: macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.2.1.app
+    steps:
+      - uses: actions/checkout@v2
+      - name: Show Environments
+        run: |
+          swift --version
+          xcodebuild -version
+      - name: Get Ruby Gem Cache
+        uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-gem-
+      - name: Install Ruby Gem
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: make gem-install
+      - name: Run Test
+        run: make test
+      - name: CocoaPods Lib Lint
+        run: make pod-lib-lint

@@ -1,0 +1,15 @@
+import SwiftSyntax
+
+public struct RulePipeline {
+    private let rules: ContiguousArray<Rule>
+
+    public init<S: Sequence>(_ rules: S) where S.Element == Rule {
+        self.rules = ContiguousArray(rules)
+    }
+
+    public func visit(_ node: Syntax) -> Syntax {
+        rules.reduce(node) { node, rule in
+            rule.rewriter().visit(node)
+        }
+    }
+}

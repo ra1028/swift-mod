@@ -1,0 +1,19 @@
+format:
+  indent: 4
+  lineBreakBeforeEachArgument: true
+
+targets:
+  main:
+    paths:
+      - Sources
+    excludedPaths:
+      - "**/main.swift"
+    rules:
+      defaultAccessLevel:
+        accessLevel: openOrPublic
+        implicitInternal: true
+
+      defaultMemberwiseInitializer:
+        implicitInitializer: true
+        implicitInternal: true
+        ignoreClassesWithInheritance: true
