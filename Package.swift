@@ -51,8 +51,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax", .exact("0.50100.0")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.0.1"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0"),
-        .package(url: "https://github.com/ra1028/swift-format.git", .branch("swift-5.1-branch-latest")),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0")
     ],
     targets: [
         cli,
