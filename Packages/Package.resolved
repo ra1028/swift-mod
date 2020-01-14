@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "swift-format",
+        "repositoryURL": "https://github.com/ra1028/swift-format.git",
+        "state": {
+          "branch": "swift-5.1-branch-latest",
+          "revision": "d53bc0f8225040cbae99035b3b12a27a215fbd88",
+          "version": null
+        }
+      },
+      {
         "package": "SwiftSyntax",
         "repositoryURL": "https://github.com/apple/swift-syntax",
         "state": {
@@ -17,15 +26,6 @@
           "branch": null,
           "revision": "693aba4c4c9dcc4767cc853a0dd38bf90ad8c258",
           "version": "0.0.1"
-        }
-      },
-      {
-        "package": "Yams",
-        "repositoryURL": "https://github.com/jpsim/Yams.git",
-        "state": {
-          "branch": null,
-          "revision": "c947a306d2e80ecb2c0859047b35c73b8e1ca27f",
-          "version": "2.0.0"
         }
       }
     ]
