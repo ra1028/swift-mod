@@ -1,8 +1,8 @@
 SWIFT_FORMAT_PATHS := Sources/ $(shell find Tests/**/*.swift -not -name XCTestManifests.swift -not -name LinuxMain.swift)
-SWIFT_BUILD_FLAGS := -c release
-SWIFT_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)
+SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
-TEMP_ZIP_DIR := .tmp/$(TOOL_NAME)
+TOOL_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/$(TOOL_NAME)
+XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 GITHUB_REPO := ra1028/$(TOOL_NAME)
 
 ifeq ($(shell uname), Darwin)
@@ -12,6 +12,8 @@ SWIFT_BUILD_FLAGS += -Xswiftc -static-stdlib
 endif
 endif
 
+.PHONY: $(MAKECMDGOALS)
+
 xcodeproj:
 	swift package generate-xcodeproj
 
@@ -20,7 +22,7 @@ linuxmain:
 
 build:
 	swift build $(SWIFT_BUILD_FLAGS)
-	@echo $(SWIFT_BIN_DIR)/$(TOOL_NAME)
+	@echo $(TOOL_BIN_DIR)/$(TOOL_NAME)
 
 test:
 	swift test -c release --parallel
@@ -40,7 +42,7 @@ pod-lib-lint:
 	bundle exec pod lib lint
 
 pod-trunk-push:
-	bundle exec pod trunk push swift-mod.podspec
+	bundle exec pod trunk push --skip-tests --skip-import-validation swift-mod.podspec
 
 docker-test:
 	docker run -v `pwd`:`pwd` -w `pwd` --rm swift:latest make test
@@ -53,11 +55,9 @@ gem-install:
 	bundle install --jobs 4 --retry 3
 
 zip: build
-	@rm -rf $(shell dirname $(TEMP_ZIP_DIR))
-	@mkdir -p $(TEMP_ZIP_DIR)
-	@cp -f $(SWIFT_BIN_DIR)/$(TOOL_NAME) $(TEMP_ZIP_DIR)
-	@cp -f LICENSE $(TEMP_ZIP_DIR)
-	(cd $(TEMP_ZIP_DIR); zip -yr - $(TOOL_NAME) LICENSE) > ./$(TOOL_NAME).zip
+	@install_name_tool -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN_DIR) 2>/dev/null || true
+	rm -f $(TOOL_NAME).zip
+	zip -j $(TOOL_NAME).zip $(TOOL_BIN_DIR) LICENSE
 
 upload-zip: zip
 	@[ -n "$(GITHUB_TOKEN)" ] || (echo "\nERROR: Make sure setting environment variable 'GITHUB_TOKEN'." && exit 1)

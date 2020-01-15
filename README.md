@@ -325,6 +325,9 @@ Run command:
 Pods/swift-mod/swift-mod [COMMAND] [OPTIONS]
 ```
 
+\* If you have changed the name of `Xcode.app` used in toolchain (`xcode-select -p`), `swift-mod` via CocoaPods can't be excuted. Please set the Xcode name to `Xcode.app`. (See: https://forums.swift.org/t/swiftsyntax-with-swift-5-1/29051)  
+
+
 ### Swift Version Support
 
 `swift-mod` depends on [SwiftSyntax](https://github.com/apple/swift-syntax) that the version in use must match the toolchain version.  
