@@ -31,10 +31,10 @@ mod:
 	swift run -c release swift-mod
 
 format:
-	swift run -c release --package-path ./Packages swift-format --configuration .swift-format.json -i -r -m format $(SWIFT_FORMAT_PATHS)
+	swift run -c release --package-path ./Tools swift-format --configuration .swift-format.json -i -r -m format $(SWIFT_FORMAT_PATHS)
 
 lint:
-	swift run -c release --package-path ./Packages swift-format --configuration .swift-format.json -r -m lint $(SWIFT_FORMAT_PATHS)
+	swift run -c release --package-path ./Tools swift-format --configuration .swift-format.json -r -m lint $(SWIFT_FORMAT_PATHS)
 
 autocorrect: mod format lint linuxmain
 

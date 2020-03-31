@@ -8,7 +8,7 @@ let core = Target.target(
     name: "SwiftModCore",
     dependencies: [
         "SwiftSyntax",
-        "SwiftToolsSupport-auto",
+        .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core"),
         "Yams",
     ]
 )
@@ -49,8 +49,8 @@ let package = Package(
         .executable(name: "swift-mod", targets: [cli.name])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax", .exact("0.50100.0")),
-        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.0.1"),
+        .package(url: "https://github.com/apple/swift-syntax.git", .exact("0.50200.0")),
+        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.1.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0")
     ],
     targets: [
