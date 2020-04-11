@@ -187,7 +187,7 @@ private extension DefaultAccessLevelRule.Rewriter {
         }
     }
 
-    func visit<Node: DeclSyntax>(
+    func visit<Node: DeclSyntaxProtocol>(
         _ node: Node,
         getDeclKeyword: (Node) -> TokenSyntax,
         getModifiers: (Node) -> ModifierListSyntax?,
@@ -197,7 +197,7 @@ private extension DefaultAccessLevelRule.Rewriter {
         let implicitInternal = options.implicitInternal ?? true
 
         let modifiers = getModifiers(node) ?? SyntaxFactory.makeModifierList([])
-        let visitFinally = visitChildren ?? { $0 }
+        let visitFinally = visitChildren ?? DeclSyntax.init
         let parentVisit = visitStack.top
 
         let modifierTokenToAssign: TokenSyntax?
@@ -339,7 +339,7 @@ private extension DefaultAccessLevelRule.AccessLebel {
     }
 }
 
-private extension DeclSyntax {
+private extension DeclSyntaxProtocol {
     var canOpen: Bool {
         switch self {
         case is ClassDeclSyntax, is FunctionDeclSyntax, is SubscriptDeclSyntax:

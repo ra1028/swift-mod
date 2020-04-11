@@ -208,7 +208,7 @@ private extension RunCommand {
         writer.write("Modifying target - \(targetName) ...")
         defer { writer.write(" done\n") }
 
-        var result = Atomic(ModifyResult())
+        let result = Atomic(ModifyResult())
         let group = DispatchGroup()
         let queue = DispatchQueue.global(qos: .userInitiated)
 
@@ -226,7 +226,7 @@ private extension RunCommand {
 
                     do {
                         source = try self.fileSystem.readFileContents(path).cString
-                        syntax = try SyntaxParser.parse(source: source)
+                        syntax = try Syntax(SyntaxParser.parse(source: source))
                         modifiedSyntax = pipeline.visit(syntax)
                     }
                     catch {

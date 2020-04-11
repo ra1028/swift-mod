@@ -24,7 +24,7 @@ open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewri
 
     public final override func visitAny(_ node: Syntax) -> Syntax? {
         // Whether to extract ignore options from comments
-        let shouldExtractNode = node is MemberDeclListItemSyntax || node is CodeBlockItemSyntax
+        let shouldExtractNode = node.is(MemberDeclListItemSyntax.self) || node.is(CodeBlockItemSyntax.self)
 
         guard shouldExtractNode, let leadingTrivia = node.firstToken?.leadingTrivia else {
             return nil
