@@ -111,15 +111,6 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
         let members = getMembers(node)
         let memberList = members.members
 
-        // Indicating whether use default implicit initializer.
-        let shouldSkipImplicitInitializer = node is StructDeclSyntax && implicitInitializer && accessLevelModifier?.name.isInternal ?? true
-        let shouldSkipClassWithInheritance = ignoreClassesWithInheritance && (node as? ClassDeclSyntax).map { $0.inheritanceClause != nil } ?? false
-        let isInitializerExists = memberList.contains { $0.decl.is(InitializerDeclSyntax.self) }
-
-        if shouldSkipImplicitInitializer || shouldSkipClassWithInheritance || isInitializerExists {
-            return visitChildren(node)
-        }
-
         let storedProperties: [StoredProperty] = memberList.compactMap { item in
             guard let variableDecl = item.decl.as(VariableDeclSyntax.self) else {
                 return nil
@@ -143,6 +134,16 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                 type: type,
                 value: value ?? (type.isOptional ? ExprSyntax(SyntaxFactory.makeNilExpr()) : nil)
             )
+        }
+
+        // Indicating whether use default implicit initializer.
+        let shouldSkipStructImplicitInitializer = node is StructDeclSyntax && implicitInitializer && accessLevelModifier?.name.isInternal ?? true
+        let shouldSkipClassImplicitInitializer = node is ClassDeclSyntax && implicitInitializer && accessLevelModifier?.name.isInternal ?? true && storedProperties.isEmpty
+        let shouldSkipClassWithInheritance = ignoreClassesWithInheritance && (node as? ClassDeclSyntax).map { $0.inheritanceClause != nil } ?? false
+        let isInitializerExists = memberList.contains { $0.decl.is(InitializerDeclSyntax.self) }
+
+        if shouldSkipStructImplicitInitializer || shouldSkipClassImplicitInitializer || shouldSkipClassWithInheritance || isInitializerExists {
+            return visitChildren(node)
         }
 
         let parentIndentTrivia = node.firstToken?.leadingTrivia.indentation ?? Trivia()
