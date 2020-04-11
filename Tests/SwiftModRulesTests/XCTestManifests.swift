@@ -38,6 +38,7 @@ extension DefaultMemberwiseInitializerRuleTests {
     // to regenerate.
     static let __allTests__DefaultMemberwiseInitializerRuleTests = [
         ("testClass", testClass),
+        ("testClassImplicitInitializer", testClassImplicitInitializer),
         ("testCustomFormat", testCustomFormat),
         ("testDescription", testDescription),
         ("testFilePrivate", testFilePrivate),
@@ -47,6 +48,7 @@ extension DefaultMemberwiseInitializerRuleTests {
         ("testPrivate", testPrivate),
         ("testReserved", testReserved),
         ("testStruct", testStruct),
+        ("testStructImplicitInitializer", testStructImplicitInitializer),
     ]
 }
 

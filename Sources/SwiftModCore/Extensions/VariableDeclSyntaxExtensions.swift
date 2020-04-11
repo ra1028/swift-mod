@@ -1,9 +1,9 @@
 import SwiftSyntax
 
 public extension VariableDeclSyntax {
-    var identifier: TokenSyntax? {
+    var identifier: IdentifierPatternSyntax? {
         bindings.lazy
-            .compactMap { ($0.pattern as? IdentifierPatternSyntax)?.identifier }
+            .compactMap { $0.pattern.as(IdentifierPatternSyntax.self) }
             .first
     }
 

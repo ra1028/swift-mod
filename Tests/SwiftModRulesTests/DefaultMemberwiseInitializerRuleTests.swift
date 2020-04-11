@@ -80,6 +80,26 @@ final class DefaultMemberwiseInitializerRuleTests: XCTestCase {
         )
     }
 
+    func testStructImplicitInitializer() throws {
+        let rule = DefaultMemberwiseInitializerRule(
+            options: DefaultMemberwiseInitializerRule.Options(
+                implicitInitializer: true,
+                implicitInternal: true,
+                ignoreClassesWithInheritance: false
+            ),
+            format: .default
+        )
+        try assertRule(
+            rule,
+            source: """
+                struct Struct {}
+                """,
+            expected: """
+                struct Struct {}
+                """
+        )
+    }
+
     func testClass() throws {
         try assertRule(
             defaultRule,
@@ -126,6 +146,26 @@ final class DefaultMemberwiseInitializerRuleTests: XCTestCase {
                         self.property7 = property7
                     }
                 }
+                """
+        )
+    }
+
+    func testClassImplicitInitializer() throws {
+        let rule = DefaultMemberwiseInitializerRule(
+            options: DefaultMemberwiseInitializerRule.Options(
+                implicitInitializer: true,
+                implicitInternal: true,
+                ignoreClassesWithInheritance: false
+            ),
+            format: .default
+        )
+        try assertRule(
+            rule,
+            source: """
+                class Class {}
+                """,
+            expected: """
+                class Class {}
                 """
         )
     }

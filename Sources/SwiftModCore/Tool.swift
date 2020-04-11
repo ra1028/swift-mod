@@ -58,9 +58,6 @@ public final class Tool {
 private extension Tool {
     func handle(error: Error) {
         switch error {
-        case let anyError as AnyError:
-            handle(error: anyError.underlyingError)
-
         case ArgumentParserError.expectedArguments(let parser, _):
             print(error: error)
             parser.printUsage(on: stderrStream)
