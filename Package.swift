@@ -51,7 +51,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-syntax.git", .revision("swift-5.3-DEVELOPMENT-SNAPSHOT-2020-07-04-a")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.1.0"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0")
+        .package(url: "https://github.com/jpsim/Yams.git", from: "3.0.1")
     ],
     targets: [
         cli,
