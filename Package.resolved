@@ -5,7 +5,7 @@
         "package": "SwiftSyntax",
         "repositoryURL": "https://github.com/apple/swift-syntax.git",
         "state": {
-          "branch": "swift-5.3-DEVELOPMENT-SNAPSHOT-2020-08-04-a",
+          "branch": "swift-5.3-DEVELOPMENT-SNAPSHOT-2020-08-18-a",
           "revision": "e39d380a1877da137d45cc5dcd23676a3fd00476",
           "version": null
         }
