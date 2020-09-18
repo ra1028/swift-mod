@@ -49,7 +49,7 @@ let package = Package(
         .executable(name: "swift-mod", targets: [cli.name])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", .revision("swift-5.3-DEVELOPMENT-SNAPSHOT-2020-08-27-a")),
+        .package(url: "https://github.com/apple/swift-syntax.git", .revision("swift-5.3-RELEASE")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.1.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "3.0.1")
     ],
