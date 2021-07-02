@@ -336,8 +336,8 @@ So you should use swift-mod version that built with compatible version of Swift 
 |Swift Version|Last Supported swift-mod Release|
 |:------------|:-------------------------------|
 |5.1          |0.0.2                           |
-|5.2          |latest                          |
-
+|5.2          |0.0.4                           |
+|5.3          |latest                          |
 
 ### Issue on macOS Before 10.14.4
 

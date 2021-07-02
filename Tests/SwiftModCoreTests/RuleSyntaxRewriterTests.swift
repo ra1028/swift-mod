@@ -26,7 +26,7 @@ final class RuleSyntaxRewriterTests: XCTestCase {
                             ),
                             accessor: nil,
                             trailingComma: nil
-                        ),
+                        )
                     ])
                 )
             ),

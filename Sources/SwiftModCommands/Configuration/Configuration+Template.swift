@@ -14,7 +14,7 @@ public extension Configuration {
             targets: [
                 "main": Target(
                     paths: [
-                        RelativePath("."),
+                        RelativePath(".")
                     ],
                     excludedPaths: [
                         RelativePath(".build"),
@@ -40,7 +40,7 @@ public extension Configuration {
                             format: format
                         ),
                     ]
-                ),
+                )
             ]
         )
     }()
