@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "Tools",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-format.git", .branch("swift-5.2-branch")),
+        .package(url: "https://github.com/apple/swift-format.git", .branch("swift-5.4-branch")),
     ],
     targets: [.target(name: "Tools", path: "TargetStub")]
 )
