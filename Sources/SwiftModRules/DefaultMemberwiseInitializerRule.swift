@@ -347,7 +347,7 @@ private extension TypeSyntax {
                                 builder.useAtSignToken(SyntaxFactory.makeAtSignToken())
                                 builder.useAttributeName(SyntaxFactory.makeIdentifier("escaping").withTrailingTrivia(.spaces(1)))
                             }
-                        ),
+                        )
                     ]),
                     baseType: self
                 )

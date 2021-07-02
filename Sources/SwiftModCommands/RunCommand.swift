@@ -145,7 +145,7 @@ public struct RunCommand: Command {
                 }
 
                 return try [
-                    modify(target: target, targetName: targetName, configurationPath: configurationPath, mode: options.mode),
+                    modify(target: target, targetName: targetName, configurationPath: configurationPath, mode: options.mode)
                 ]
             }
             else {
