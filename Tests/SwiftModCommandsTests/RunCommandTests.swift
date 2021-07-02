@@ -31,7 +31,7 @@ final class RunCommandTests: XCTestCase {
                         RelativePath("./test/excluded/file.swift"),
                     ],
                     excludedPaths: [
-                        RelativePath("./test/excluded/file.swift"),
+                        RelativePath("./test/excluded/file.swift")
                     ],
                     rules: [
                         DefaultAccessLevelRule(
@@ -40,9 +40,9 @@ final class RunCommandTests: XCTestCase {
                                 implicitInternal: false
                             ),
                             format: format
-                        ),
+                        )
                     ]
-                ),
+                )
             ]
         )
 
