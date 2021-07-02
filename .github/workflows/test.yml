@@ -1,26 +1,33 @@
 name: GitHub Actions
-on: push
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
 jobs:
   linux:
     name: Test on Linux
     runs-on: ubuntu-18.04
     container:
-      image: swift:5.2
+      image: swift:5.3
     steps:
       - uses: actions/checkout@v2
       - name: Show Environments
         run: swift --version
+      - name: Install missing dependencies in ubuntu
+        run: make ubuntu-deps
       - name: Validate Source Code
         run: make autocorrect && [ -z "$(git status --porcelain)" ]
       - name: Run Test
         run: make test
   macOS:
     name: Test on macOS
-    runs-on: macos-latest
+    runs-on: macos-10.15
     strategy:
       matrix:
         xcode_version:
-          - "11.4"
+          - "12.4"
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
     steps:
