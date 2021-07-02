@@ -23,7 +23,7 @@ jobs:
         run: make test
   macOS:
     name: Test on macOS
-    runs-on: macos-11.4
+    runs-on: macos-11
     strategy:
       matrix:
         xcode_version:
