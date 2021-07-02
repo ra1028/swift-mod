@@ -4,7 +4,7 @@ TOOL_NAME := swift-mod
 TOOL_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/$(TOOL_NAME)
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 GITHUB_REPO := ra1028/$(TOOL_NAME)
-DOCKER_IMAGE_NAME := swift:5.3
+DOCKER_IMAGE_NAME := swift:5.4
 
 ifeq ($(shell uname), Darwin)
 USE_SWIFT_STATIC_STDLIB := $(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo use_swift_static_stdlib_flag)
