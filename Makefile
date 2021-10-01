@@ -35,7 +35,7 @@ format:
 	swift run -c release --package-path ./Tools -- swift-format --configuration .swift-format.json -i -r -m format $(SWIFT_FORMAT_PATHS)
 
 lint:
-	swift run -c release --package-path ./Tools -- swift-format --configuration .swift-format.json -r -m lint $(SWIFT_FORMAT_PATHS)
+	swift run -c release --package-path ./Tools -- swift-format lint --configuration .swift-format.json -r $(SWIFT_FORMAT_PATHS)
 
 autocorrect: mod format lint linuxmain
 
