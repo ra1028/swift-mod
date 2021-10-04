@@ -76,7 +76,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
         public override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             visit(
                 node,
-                getDeclKeyword: { $0.classKeyword },
+                getDeclKeyword: { $0.classOrActorKeyword },
                 getModifiers: { $0.modifiers },
                 replacingModifiers: { $0.withModifiers($1) },
                 visitChildren: super.visit
