@@ -1,34 +1,41 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "SwiftSyntax",
-        "repositoryURL": "https://github.com/apple/swift-syntax.git",
-        "state": {
-          "branch": "swift-5.5-RELEASE",
-          "revision": "cf40be70deaf4ce7d44eb1a7e14299c391e2363f",
-          "version": null
-        }
-      },
-      {
-        "package": "swift-tools-support-core",
-        "repositoryURL": "https://github.com/apple/swift-tools-support-core.git",
-        "state": {
-          "branch": null,
-          "revision": "f9bbd6b80d67408021576adf6247e17c2e957d92",
-          "version": "0.2.4"
-        }
-      },
-      {
-        "package": "Yams",
-        "repositoryURL": "https://github.com/jpsim/Yams.git",
-        "state": {
-          "branch": null,
-          "revision": "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
-          "version": "4.0.6"
-        }
+  "pins" : [
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax",
+      "state" : {
+        "revision" : "0b6c22b97f8e9320bca62e82cdbee601cf37ad3f",
+        "version" : "0.50600.1"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system.git",
+      "state" : {
+        "revision" : "836bc4557b74fe6d2660218d56e3ce96aff76574",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-tools-support-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-tools-support-core.git",
+      "state" : {
+        "revision" : "b7667f3e266af621e5cc9c77e74cacd8e8c00cb4",
+        "version" : "0.2.5"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "00c403debcd0a007b854bb35e598466207a2d58c",
+        "version" : "5.0.0"
+      }
+    }
+  ],
+  "version" : 2
 }

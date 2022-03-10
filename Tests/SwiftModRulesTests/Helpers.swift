@@ -1,6 +1,6 @@
 import Foundation
 import SwiftModCore
-import SwiftSyntax
+import SwiftSyntaxParser
 import XCTest
 
 func assertRuleDescription(_ rule: AnyRule, file: StaticString = #file, line: UInt = #line) throws {

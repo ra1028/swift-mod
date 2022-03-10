@@ -2,6 +2,7 @@ import Foundation
 import SwiftModCore
 import SwiftModRules
 import SwiftSyntax
+import SwiftSyntaxParser
 import TSCBasic
 import TSCUtility
 import Yams
