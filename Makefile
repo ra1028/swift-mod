@@ -51,6 +51,7 @@ docker-test:
 
 gem-install:
 	bundle config path vendor/bundle
+	bundle config unset frozen
 	bundle install --jobs 4 --retry 3
 
 zip: build
