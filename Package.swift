@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.6
 
 import PackageDescription
 
@@ -7,7 +7,7 @@ let testsSuffix = "Tests"
 let core = Target.target(
     name: "SwiftModCore",
     dependencies: [
-        "SwiftSyntax",
+        .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
         .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core"),
         "Yams",
     ]
@@ -38,7 +38,7 @@ let commandsTests = Target.testTarget(
     dependencies: [.target(name: commands.name)] + commands.dependencies
 )
 
-let cli = Target.target(
+let cli = Target.executableTarget(
     name: "swift-mod",
     dependencies: [.target(name: commands.name)] + commands.dependencies
 )
@@ -49,9 +49,9 @@ let package = Package(
         .executable(name: "swift-mod", targets: [cli.name])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", .revision("swift-5.5-RELEASE")),
+        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "0.50600.1")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.2.3"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "4.0.6")
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
     ],
     targets: [
         cli,

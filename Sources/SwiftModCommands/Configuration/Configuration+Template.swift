@@ -20,7 +20,6 @@ public extension Configuration {
                         RelativePath(".build"),
                         RelativePath("Package.swift"),
                         RelativePath("**/main.swift"),
-                        RelativePath("**/LinuxMain.swift"),
                         RelativePath("**/XCTestManifests.swift"),
                     ],
                     rules: [

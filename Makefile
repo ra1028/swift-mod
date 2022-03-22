@@ -1,4 +1,4 @@
-SWIFT_FORMAT_PATHS := Sources/ $(shell find Tests/**/*.swift -not -name XCTestManifests.swift -not -name LinuxMain.swift)
+SWIFT_FORMAT_PATHS := Sources/ $(shell find Tests/**/*.swift -not -name XCTestManifests.swift)
 SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
 TOOL_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/$(TOOL_NAME)
@@ -18,9 +18,6 @@ endif
 xcodeproj:
 	swift package generate-xcodeproj
 
-linuxmain:
-	swift test -c release --generate-linuxmain
-
 build:
 	swift build $(SWIFT_BUILD_FLAGS)
 	@echo $(TOOL_BIN_DIR)/$(TOOL_NAME)
@@ -32,12 +29,12 @@ mod:
 	swift run -c release swift-mod
 
 format:
-	swift run -c release --package-path ./Tools -- swift-format --configuration .swift-format.json -i -r -m format $(SWIFT_FORMAT_PATHS)
+	swift run -c release --package-path ./Tools -- swift-format format --configuration .swift-format.json -i -r $(SWIFT_FORMAT_PATHS)
 
 lint:
 	swift run -c release --package-path ./Tools -- swift-format lint --configuration .swift-format.json -r $(SWIFT_FORMAT_PATHS)
 
-autocorrect: mod format lint linuxmain
+autocorrect: mod format lint
 
 pod-lib-lint:
 	bundle exec pod lib lint
