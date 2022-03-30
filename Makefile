@@ -1,7 +1,6 @@
 SWIFT_FORMAT_PATHS := Sources/ $(shell find Tests/**/*.swift -not -name XCTestManifests.swift)
 SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
-TOOL_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)/$(TOOL_NAME)
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 GITHUB_REPO := ra1028/$(TOOL_NAME)
 DOCKER_IMAGE_NAME := swift:5.5
@@ -11,7 +10,11 @@ USE_SWIFT_STATIC_STDLIB := $(shell test -d $$(dirname $$(xcrun --find swift))/..
 ifeq ($(USE_SWIFT_STATIC_STDLIB), use_swift_static_stdlib_flag)
 SWIFT_BUILD_FLAGS += -Xswiftc -static-stdlib
 endif
+SWIFT_BUILD_FLAGS += --arch arm64 --arch x86_64
 endif
+
+TOOL_BIN_DIR := $(shell swift build $(SWIFT_BUILD_FLAGS) --show-bin-path)
+TOOL_BIN := $(TOOL_BIN_DIR)/$(TOOL_NAME)
 
 .PHONY: $(MAKECMDGOALS)
 
@@ -20,7 +23,7 @@ xcodeproj:
 
 build:
 	swift build $(SWIFT_BUILD_FLAGS)
-	@echo $(TOOL_BIN_DIR)/$(TOOL_NAME)
+	@echo $(TOOL_BIN)
 
 test:
 	swift test -c release --parallel
@@ -55,9 +58,9 @@ gem-install:
 	bundle install --jobs 4 --retry 3
 
 zip: build
-	install_name_tool -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN_DIR) 2>/dev/null || true
+	install_name_tool -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN) 2>/dev/null || true
 	rm -f $(TOOL_NAME).zip
-	zip -j $(TOOL_NAME).zip $(TOOL_BIN_DIR) LICENSE
+	zip -j $(TOOL_NAME).zip $(TOOL_BIN) $(TOOL_BIN_DIR)/lib_InternalSwiftSyntaxParser.dylib LICENSE
 
 upload-zip: zip
 	@[ -n "$(GITHUB_TOKEN)" ] || (echo "\nERROR: Make sure setting environment variable 'GITHUB_TOKEN'." && exit 1)
