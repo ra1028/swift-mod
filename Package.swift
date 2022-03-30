@@ -45,6 +45,9 @@ let cli = Target.executableTarget(
 
 let package = Package(
     name: "swift-mod",
+    platforms: [
+       .macOS("10.15")
+    ],
     products: [
         .executable(name: "swift-mod", targets: [cli.name])
     ],
