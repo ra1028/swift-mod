@@ -3,7 +3,7 @@ import SwiftSyntax
 
 public final class DefaultMemberwiseInitializerRule: RuleDefinition {
     public static let description = RuleDescription(
-        identifier: "defaultMemberwiseInitializer",
+        name: "defaultMemberwiseInitializer",
         priority: .low,
         overview: "Defines a memberwise initializer according to the access level in the type declaration if not present",
         exampleOptions: Options(

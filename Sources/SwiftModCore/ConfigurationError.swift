@@ -47,7 +47,7 @@ public enum ConfigurationError: Error, CustomStringConvertible {
 
         case .unexpectedRuleSetting(let description, let error):
             return """
-                Unexpected rule setting is found in rule '\(description.identifier)'.
+                Unexpected rule setting is found in rule '\(description.name)'.
 
                 DETAILS:
                 \(String(error).offsetBeforeEachLines(2))

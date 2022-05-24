@@ -18,7 +18,7 @@ final class RulesCommandTests: XCTestCase {
     }
 
     func testRunWithDetail() throws {
-        let options = RulesCommand.Options(detailRuleIdentifier: Configuration.allRules.first?.description.identifier)
+        let options = RulesCommand.Options(detailRuleIdentifier: Configuration.allRules.first?.description.name)
         let command = RulesCommand()
         let exitCode = try command.run(with: options)
 

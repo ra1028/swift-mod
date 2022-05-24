@@ -48,7 +48,7 @@ public struct RulesCommand: Command {
 
     public func run(with options: Options) throws -> Int32 {
         if let detailRuleIdentifier = options.detailRuleIdentifier {
-            guard let rule = Configuration.allRules.first(where: { $0.description.identifier == detailRuleIdentifier }) else {
+            guard let rule = Configuration.allRules.first(where: { $0.description.name == detailRuleIdentifier }) else {
                 throw Error.unknownRuleIdentifierSpecified(identifier: detailRuleIdentifier)
             }
 
@@ -56,8 +56,8 @@ public struct RulesCommand: Command {
             let writer = InteractiveWriter.stdout
             let offset = 2
 
-            writer.write("IDENTIFIER:\n")
-            writer.write(description.identifier.offsetBeforeEachLines(offset))
+            writer.write("NAME:\n")
+            writer.write(description.name.offsetBeforeEachLines(offset))
             writer.write("\n\n")
             writer.write("OVERVIEW:\n")
             writer.write(description.overview.offsetBeforeEachLines(offset))
@@ -78,7 +78,7 @@ public struct RulesCommand: Command {
             let allRuleDescriptions = Configuration.allRules.map { $0.description }
             let maxIdentifierWidth =
                 allRuleDescriptions.lazy
-                .map { $0.identifier.count }
+                .map { $0.name.count }
                 .max() ?? 0
             let writer = InteractiveWriter.stdout
 
@@ -86,7 +86,7 @@ public struct RulesCommand: Command {
 
             for description in allRuleDescriptions {
                 writer.write(
-                    description.identifier
+                    description.name
                         .padding(toLength: maxIdentifierWidth + 4, withPad: " ", startingAt: 0)
                         .offsetBeforeEachLines(2)
                 )

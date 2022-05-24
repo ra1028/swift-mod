@@ -8,16 +8,16 @@ private extension NSRegularExpression {
 public protocol RuleSyntaxRewriterProtocol: SyntaxRewriter {
     associatedtype Options: Codable
 
-    init(identifier: String, options: Options, format: Format)
+    init(name: String, options: Options, format: Format)
 }
 
 open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewriterProtocol {
-    public let identifier: String
+    public let name: String
     public let options: Options
     public let format: Format
 
-    public required init(identifier: String, options: Options, format: Format) {
-        self.identifier = identifier
+    public required init(name: String, options: Options, format: Format) {
+        self.name = name
         self.options = options
         self.format = format
     }
@@ -61,7 +61,7 @@ open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewri
                 .lazy
                 .map { $0.trimmingCharacters(in: .whitespaces) }
                 .filter { !$0.isEmpty }
-                .contains(identifier)
+                .contains(name)
 
             if shouldIgnore {
                 return node

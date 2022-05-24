@@ -7,11 +7,20 @@ import Yams
 
 final class RunCommandTests: XCTestCase {
     func testArguments() throws {
-        let options = try parseOptions(RunCommand(), arguments: ["--dry-run", "--configuration", "/home/cwd/.swift-mod.yml", "--target", "test"])
+        let options = try parseOptions(
+            RunCommand(),
+            arguments: [
+                "--dry-run",
+                "--configuration",
+                "/home/cwd/.swift-mod.yml",
+                "/home/cwd/file1.swift",
+                "/home/cwd/file2.swift",
+            ]
+        )
 
         XCTAssertEqual(options.mode, .dryRun)
         XCTAssertEqual(options.configurationPath, AbsolutePath("/home/cwd/.swift-mod.yml"))
-        XCTAssertEqual(options.targetName, "test")
+        XCTAssertEqual(options.paths, [AbsolutePath("/home/cwd/file1.swift"), AbsolutePath("/home/cwd/file2.swift")])
     }
 
     func testRun() throws {
@@ -24,45 +33,37 @@ final class RunCommandTests: XCTestCase {
         )
         let configuration = Configuration(
             format: format,
-            targets: [
-                "test": Target(
-                    paths: [
-                        RelativePath("./test/file.swift"),
-                        RelativePath("./test/excluded/file.swift"),
-                    ],
-                    excludedPaths: [
-                        RelativePath("./test/excluded/file.swift")
-                    ],
-                    rules: [
-                        DefaultAccessLevelRule(
-                            options: DefaultAccessLevelRule.Options(
-                                accessLevel: .public,
-                                implicitInternal: false
-                            ),
-                            format: format
-                        )
-                    ]
+            rules: [
+                DefaultAccessLevelRule(
+                    options: DefaultAccessLevelRule.Options(
+                        accessLevel: .public,
+                        implicitInternal: false
+                    ),
+                    format: format
                 )
             ]
         )
 
-        try fileSystem.createDirectory(AbsolutePath("/home/cwd/test/excluded"), recursive: true)
+        try fileSystem.createDirectory(AbsolutePath("/home/cwd/test"), recursive: true)
         try fileSystem.writeFileContents(
             AbsolutePath("/home/cwd/.swift-mod.yml"),
             bytes: ByteString(encodingAsUTF8: try YAMLEncoder().encode(configuration))
         )
         try fileSystem.writeFileContents(
-            AbsolutePath("/home/cwd/test/file.swift"),
+            AbsolutePath("/home/cwd/test/file1.swift"),
             bytes: #"let cat = "meow""#
         )
         try fileSystem.writeFileContents(
-            AbsolutePath("/home/cwd/test/excluded/file.swift"),
+            AbsolutePath("/home/cwd/test/file2.swift"),
             bytes: #"let dog = "woof""#
         )
 
         let options = RunCommand.Options(
             configurationPath: AbsolutePath("/home/cwd/.swift-mod.yml"),
-            targetName: nil
+            paths: [
+                AbsolutePath("/home/cwd/test/file1.swift"),
+                AbsolutePath("/home/cwd/test/file2.swift"),
+            ]
         )
 
         let command = RunCommand(fileSystem: fileSystem, fileManager: fileManager, measure: measure)
@@ -70,12 +71,12 @@ final class RunCommandTests: XCTestCase {
 
         XCTAssertEqual(exitCode, 0)
         XCTAssertEqual(
-            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file.swift")),
+            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file1.swift")),
             #"public let cat = "meow""#
         )
         XCTAssertEqual(
-            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/excluded/file.swift")),
-            #"let dog = "woof""#
+            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file2.swift")),
+            #"public let dog = "woof""#
         )
     }
 }

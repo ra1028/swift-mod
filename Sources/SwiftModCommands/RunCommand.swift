@@ -11,16 +11,16 @@ public struct RunCommand: Command {
     public struct Options {
         public var mode: Mode
         public var configurationPath: AbsolutePath?
-        public var targetName: String?
+        public var paths: [AbsolutePath]
 
         public init(
             mode: Mode = .modify,
             configurationPath: AbsolutePath? = nil,
-            targetName: String? = nil
+            paths: [AbsolutePath] = []
         ) {
             self.mode = mode
             self.configurationPath = configurationPath
-            self.targetName = targetName
+            self.paths = paths
         }
     }
 
@@ -31,16 +31,12 @@ public struct RunCommand: Command {
     }
 
     public enum Error: Swift.Error, CustomStringConvertible {
-        case unknownTargetSpecified(targetName: String)
         case readOrParseFileFailed(path: AbsolutePath, error: Swift.Error)
         case writeFileContentsFailed(path: AbsolutePath, error: Swift.Error)
         case loadConfigurationFilePathFailed
 
         public var description: String {
             switch self {
-            case .unknownTargetSpecified(let targetName):
-                return "Unknown target name '\(targetName)' specified"
-
             case .readOrParseFileFailed(let path, let error):
                 return """
                     Unable to parse file '\(path.prettyPath())'.
@@ -100,18 +96,6 @@ public struct RunCommand: Command {
 
         binder.bind(
             option: parser.add(
-                option: "--target",
-                shortName: "-t",
-                kind: String.self,
-                usage: "The target name to be run partially"
-            ),
-            to: { options, targetName in
-                options.targetName = targetName
-            }
-        )
-
-        binder.bind(
-            option: parser.add(
                 option: "--dry-run",
                 kind: Bool.self,
                 usage: "Run without actually changing any files"
@@ -131,6 +115,19 @@ public struct RunCommand: Command {
                 options.mode = .check
             }
         )
+
+        binder.bindArray(
+            positional: parser.add(
+                positional: "paths",
+                kind: [PathArgument].self,
+                strategy: .remaining,
+                usage: "A list of files that to be modified",
+                completion: .filename
+            ),
+            to: { options, paths in
+                options.paths = paths.map(\.path)
+            }
+        )
     }
 
     public func run(with options: Options) throws -> Int32 {
@@ -140,20 +137,9 @@ public struct RunCommand: Command {
             .unwrapped(or: Error.loadConfigurationFilePathFailed)
         let configuration = try loadConfiguration(at: configurationPath)
         let results = try measure.run { () -> [ModifyResult] in
-            if let targetName = options.targetName {
-                guard let target = configuration.targets[targetName] else {
-                    throw Error.unknownTargetSpecified(targetName: targetName)
-                }
-
-                return try [
-                    modify(target: target, targetName: targetName, configurationPath: configurationPath, mode: options.mode)
-                ]
-            }
-            else {
-                return try configuration.targets.map { target in
-                    try modify(target: target.value, targetName: target.key, configurationPath: configurationPath, mode: options.mode)
-                }
-            }
+            return try [
+                modify(rules: configuration.rules, options: options)
+            ]
         }
 
         let numberOfModifiedFiles = results.value.reduce(0) { $0 + $1.numberOfModifiedFiles }
@@ -185,28 +171,22 @@ private extension RunCommand {
     }
 
     func modify(
-        target: Target,
-        targetName: String,
-        configurationPath: AbsolutePath,
-        mode: Mode
+        rules: [AnyRule],
+        options: Options
     ) throws -> ModifyResult {
         let pathIterator = SwiftFileIterator(
             fileSystem: fileSystem,
             fileManager: fileManager,
-            referencePath: fileSystem.isDirectory(configurationPath)
-                ? configurationPath
-                : configurationPath.parentDirectory,
-            paths: target.paths,
-            excludedPaths: target.excludedPaths
+            paths: options.paths
         )
         let pipeline = RulePipeline(
-            target.rules.lazy
+            rules.lazy
                 .filter { $0.isEnabled }
                 .sorted { type(of: $0).description.priority > type(of: $1).description.priority }
         )
-
         let writer = InteractiveWriter.stdout
-        writer.write("Modifying target - \(targetName) ...")
+        writer.write("Applying rules ...")
+
         defer { writer.write(" done\n") }
 
         let result = Atomic(ModifyResult())
@@ -237,7 +217,7 @@ private extension RunCommand {
                     let modifiedSource = modifiedSyntax.description
                     let isModified = source != modifiedSource
 
-                    if isModified && mode == .modify {
+                    if isModified && options.mode == .modify {
                         try self.rewriteFileContents(path: path, modifiedSource: modifiedSource)
                     }
 
