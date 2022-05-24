@@ -1,28 +1,11 @@
-import SwiftModCommands
+@testable import SwiftModCommands
 import SwiftModCore
 import SwiftModRules
 import TSCBasic
 import XCTest
 import Yams
 
-final class RunCommandTests: XCTestCase {
-    func testArguments() throws {
-        let options = try parseOptions(
-            RunCommand(),
-            arguments: [
-                "--dry-run",
-                "--configuration",
-                "/home/cwd/.swift-mod.yml",
-                "/home/cwd/file1.swift",
-                "/home/cwd/file2.swift",
-            ]
-        )
-
-        XCTAssertEqual(options.mode, .dryRun)
-        XCTAssertEqual(options.configurationPath, AbsolutePath("/home/cwd/.swift-mod.yml"))
-        XCTAssertEqual(options.paths, [AbsolutePath("/home/cwd/file1.swift"), AbsolutePath("/home/cwd/file2.swift")])
-    }
-
+final class ModCommandRunnerTests: XCTestCase {
     func testRun() throws {
         let fileSystem = InMemoryFileSystem()
         let fileManager = InMemoryFileManager(fileSystem: fileSystem)
@@ -43,10 +26,11 @@ final class RunCommandTests: XCTestCase {
                 )
             ]
         )
+        let configurationPath = AbsolutePath("/home/cwd/.swift-mod.yml")
 
         try fileSystem.createDirectory(AbsolutePath("/home/cwd/test"), recursive: true)
         try fileSystem.writeFileContents(
-            AbsolutePath("/home/cwd/.swift-mod.yml"),
+            configurationPath,
             bytes: ByteString(encodingAsUTF8: try YAMLEncoder().encode(configuration))
         )
         try fileSystem.writeFileContents(
@@ -58,18 +42,19 @@ final class RunCommandTests: XCTestCase {
             bytes: #"let dog = "woof""#
         )
 
-        let options = RunCommand.Options(
-            configurationPath: AbsolutePath("/home/cwd/.swift-mod.yml"),
+        let runner = ModCommandRunner(
+            configuration: configurationPath,
+            mode: .modify,
             paths: [
                 AbsolutePath("/home/cwd/test/file1.swift"),
                 AbsolutePath("/home/cwd/test/file2.swift"),
-            ]
+            ],
+            fileSystem: fileSystem,
+            fileManager: fileManager,
+            measure: measure
         )
+        try runner.run()
 
-        let command = RunCommand(fileSystem: fileSystem, fileManager: fileManager, measure: measure)
-        let exitCode = try command.run(with: options)
-
-        XCTAssertEqual(exitCode, 0)
         XCTAssertEqual(
             try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file1.swift")),
             #"public let cat = "meow""#

@@ -1,45 +1,21 @@
-import Foundation
-import SwiftModCore
-import SwiftModRules
-import SwiftSyntax
-import SwiftSyntaxParser
 import TSCBasic
-import TSCUtility
+import SwiftModCore
+import Foundation
 import Yams
+import SwiftSyntaxParser
+import SwiftSyntax
 
-public struct RunCommand: Command {
-    public struct Options {
-        public var mode: Mode
-        public var configurationPath: AbsolutePath?
-        public var paths: [AbsolutePath]
-
-        public init(
-            mode: Mode = .modify,
-            configurationPath: AbsolutePath? = nil,
-            paths: [AbsolutePath] = []
-        ) {
-            self.mode = mode
-            self.configurationPath = configurationPath
-            self.paths = paths
-        }
-    }
-
-    public enum Mode {
-        case modify
-        case dryRun
-        case check
-    }
-
-    public enum Error: Swift.Error, CustomStringConvertible {
+internal struct ModCommandRunner {
+    enum Error: Swift.Error, CustomStringConvertible {
         case readOrParseFileFailed(path: AbsolutePath, error: Swift.Error)
         case writeFileContentsFailed(path: AbsolutePath, error: Swift.Error)
         case loadConfigurationFilePathFailed
 
-        public var description: String {
+        var description: String {
             switch self {
             case .readOrParseFileFailed(let path, let error):
                 return """
-                    Unable to parse file '\(path.prettyPath())'.
+                    Unable to parse file '\(path)'.
 
                     DETAILS:
                     \(String(error).offsetBeforeEachLines(2))
@@ -47,7 +23,7 @@ public struct RunCommand: Command {
 
             case .writeFileContentsFailed(let path, let error):
                 return """
-                    Unable to write file contents to '\(path.prettyPath())'.
+                    Unable to write file contents to '\(path)'.
 
                     DETAILS:
                     \(String(error).offsetBeforeEachLines(2))
@@ -59,86 +35,19 @@ public struct RunCommand: Command {
         }
     }
 
-    public static let description = CommandDescription(
-        name: "run",
-        usage: "[options]",
-        overview: "Modifies Swift source code by rules",
-        defaultOptions: Options()
-    )
+    let configuration: AbsolutePath?
+    let mode: Mode
+    let paths: [AbsolutePath]
+    let fileSystem: FileSystem
+    let fileManager: FileManagerProtocol
+    let measure: Measure
 
-    private let fileSystem: FileSystem
-    private let fileManager: FileManagerProtocol
-    private let measure: Measure
-
-    public init(
-        fileSystem: FileSystem = localFileSystem,
-        fileManager: FileManagerProtocol = FileManager.default,
-        measure: Measure = Measure()
-    ) {
-        self.fileSystem = fileSystem
-        self.fileManager = fileManager
-        self.measure = measure
-    }
-
-    public func defineArguments(parser: ArgumentParser, binder: ArgumentBinder<Options>) {
-        binder.bind(
-            option: parser.add(
-                option: "--configuration",
-                shortName: "-c",
-                kind: PathArgument.self,
-                usage: "The path to a configuration Yaml file",
-                completion: .filename
-            ),
-            to: { options, configuration in
-                options.configurationPath = configuration.path
-            }
-        )
-
-        binder.bind(
-            option: parser.add(
-                option: "--dry-run",
-                kind: Bool.self,
-                usage: "Run without actually changing any files"
-            ),
-            to: { options, _ in
-                options.mode = .dryRun
-            }
-        )
-
-        binder.bind(
-            option: parser.add(
-                option: "--check",
-                kind: Bool.self,
-                usage: "Dry run that an error occurs if the any files should be changed"
-            ),
-            to: { options, _ in
-                options.mode = .check
-            }
-        )
-
-        binder.bindArray(
-            positional: parser.add(
-                positional: "paths",
-                kind: [PathArgument].self,
-                strategy: .remaining,
-                usage: "A list of files that to be modified",
-                completion: .filename
-            ),
-            to: { options, paths in
-                options.paths = paths.map(\.path)
-            }
-        )
-    }
-
-    public func run(with options: Options) throws -> Int32 {
-        let configurationPath =
-            try options.configurationPath
-            ?? fileSystem.currentWorkingDirectory
-            .unwrapped(or: Error.loadConfigurationFilePathFailed)
+    func run() throws {
+        let configurationPath = try configuration ?? fileSystem.currentWorkingDirectory.unwrapped(or: Error.loadConfigurationFilePathFailed)
         let configuration = try loadConfiguration(at: configurationPath)
         let results = try measure.run { () -> [ModifyResult] in
             return try [
-                modify(rules: configuration.rules, options: options)
+                modify(rules: configuration.rules)
             ]
         }
 
@@ -146,38 +55,32 @@ public struct RunCommand: Command {
         let numberOfTotalFiles = results.value.reduce(0) { $0 + $1.numberOfTotalFiles }
         let message = "\(numberOfModifiedFiles)/\(numberOfTotalFiles) file\(numberOfModifiedFiles > 1 ? "s" : "") in \(results.time.formattedString())\n"
 
-        switch options.mode {
-        case .modify:
-            InteractiveWriter.stdout.write("Completed modification " + message, inColor: .green)
-            return 0
+        switch mode {
+            case .modify:
+                InteractiveWriter.stdout.write("Completed modification " + message, inColor: .green)
 
-        case .dryRun:
-            InteractiveWriter.stdout.write("Completed dry run modification " + message, inColor: .green)
-            return 0
+            case .dryRun:
+                InteractiveWriter.stdout.write("Completed dry run modification " + message, inColor: .green)
 
-        case .check:
-            let isFailed = numberOfModifiedFiles > 0
-            InteractiveWriter.stdout.write("Completed check modification " + message, inColor: isFailed ? .red : .green)
-            return isFailed ? 1 : 0
+            case .check:
+                let isFailed = numberOfModifiedFiles > 0
+                InteractiveWriter.stdout.write("Completed check modification " + message, inColor: isFailed ? .red : .green)
         }
     }
 }
 
-private extension RunCommand {
+private extension ModCommandRunner {
     struct ModifyResult {
         var numberOfModifiedFiles = 0
         var numberOfTotalFiles = 0
         var errors = [Swift.Error]()
     }
 
-    func modify(
-        rules: [AnyRule],
-        options: Options
-    ) throws -> ModifyResult {
+    func modify(rules: [AnyRule]) throws -> ModifyResult {
         let pathIterator = SwiftFileIterator(
             fileSystem: fileSystem,
             fileManager: fileManager,
-            paths: options.paths
+            paths: paths
         )
         let pipeline = RulePipeline(
             rules.lazy
@@ -217,7 +120,7 @@ private extension RunCommand {
                     let modifiedSource = modifiedSyntax.description
                     let isModified = source != modifiedSource
 
-                    if isModified && options.mode == .modify {
+                    if isModified && mode == .modify {
                         try self.rewriteFileContents(path: path, modifiedSource: modifiedSource)
                     }
 
