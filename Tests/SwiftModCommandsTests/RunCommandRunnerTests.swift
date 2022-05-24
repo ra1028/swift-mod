@@ -6,7 +6,7 @@ import Yams
 
 @testable import SwiftModCommands
 
-final class ModCommandRunnerTests: XCTestCase {
+final class RunCommandRunnerTests: XCTestCase {
     func testRun() throws {
         let fileSystem = InMemoryFileSystem()
         let fileManager = InMemoryFileManager(fileSystem: fileSystem)
@@ -43,7 +43,7 @@ final class ModCommandRunnerTests: XCTestCase {
             bytes: #"let dog = "woof""#
         )
 
-        let runner = ModCommandRunner(
+        let runner = RunCommandRunner(
             configuration: configurationPath,
             mode: .modify,
             paths: [

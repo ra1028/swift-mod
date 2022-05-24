@@ -3,14 +3,10 @@ import Foundation
 import SwiftModCore
 import TSCBasic
 
-public struct ModCommand: ParsableCommand {
+public struct RunCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(
-        commandName: "swift-mod",
-        abstract: "Modifies Swift source code with rules",
-        subcommands: [
-            InitCommand.self,
-            RulesCommand.self,
-        ]
+        commandName: "run",
+        abstract: "Runs modification"
     )
 
     @Option(name: .shortAndLong)
@@ -25,7 +21,7 @@ public struct ModCommand: ParsableCommand {
     public init() {}
 
     public func run() throws {
-        let runner = ModCommandRunner(
+        let runner = RunCommandRunner(
             configuration: configuration,
             mode: mode,
             paths: paths,

@@ -5,7 +5,7 @@ import SwiftSyntaxParser
 import TSCBasic
 import Yams
 
-internal struct ModCommandRunner {
+internal struct RunCommandRunner {
     enum Error: Swift.Error, CustomStringConvertible {
         case readOrParseFileFailed(path: AbsolutePath, error: Swift.Error)
         case writeFileContentsFailed(path: AbsolutePath, error: Swift.Error)
@@ -69,7 +69,7 @@ internal struct ModCommandRunner {
     }
 }
 
-private extension ModCommandRunner {
+private extension RunCommandRunner {
     struct ModifyResult {
         var numberOfModifiedFiles = 0
         var numberOfTotalFiles = 0

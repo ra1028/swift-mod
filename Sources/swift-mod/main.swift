@@ -1,3 +1,0 @@
-import SwiftModCommands
-
-ModCommand.main()
