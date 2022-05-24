@@ -1,9 +1,10 @@
-@testable import SwiftModCommands
 import SwiftModCore
 import SwiftModRules
 import TSCBasic
 import XCTest
 import Yams
+
+@testable import SwiftModCommands
 
 final class ModCommandRunnerTests: XCTestCase {
     func testRun() throws {

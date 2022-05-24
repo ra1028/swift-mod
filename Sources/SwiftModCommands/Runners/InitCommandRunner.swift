@@ -1,5 +1,5 @@
-import TSCBasic
 import SwiftModCore
+import TSCBasic
 import Yams
 
 internal struct InitCommandRunner {
@@ -32,7 +32,7 @@ internal struct InitCommandRunner {
     let fileManager: FileManagerProtocol
 
     func run() throws {
-        let outputPath = try output ?? fileSystem.currentWorkingDirectory .unwrapped(or: Error.loadOutputPathFailed)
+        let outputPath = try output ?? fileSystem.currentWorkingDirectory.unwrapped(or: Error.loadOutputPathFailed)
 
         do {
             let outputPath =

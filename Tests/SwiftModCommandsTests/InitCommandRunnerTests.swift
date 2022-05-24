@@ -1,8 +1,9 @@
-@testable import SwiftModCommands
-import TSCBasic
 import SwiftModCore
+import TSCBasic
 import XCTest
 import Yams
+
+@testable import SwiftModCommands
 
 final class InitCommandTests: XCTestCase {
     func testRun() throws {

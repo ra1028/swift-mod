@@ -1,5 +1,11 @@
-import TSCBasic
 import ArgumentParser
+import TSCBasic
+
+public enum Mode: String, ExpressibleByArgument {
+    case modify
+    case dryRun = "dry-run"
+    case check
+}
 
 extension AbsolutePath: ExpressibleByArgument {
     public init?(argument: String) {

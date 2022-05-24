@@ -2,7 +2,7 @@ import TSCBasic
 
 public enum ConfigurationError: Error, CustomStringConvertible {
     case invalidSetting(error: Error)
-    case invalidRuleIdentifier(String)
+    case invalidRuleName(String)
     case decodeFailed(error: Error)
     case loadFailed(path: AbsolutePath, error: Error)
     case unexpectedFormatSetting(details: String)
@@ -18,8 +18,8 @@ public enum ConfigurationError: Error, CustomStringConvertible {
                 \(String(error).offsetBeforeEachLines(2))
                 """
 
-        case .invalidRuleIdentifier(let identifier):
-            return "Configuration file contains an invalid rule '\(identifier)'"
+        case .invalidRuleName(let name):
+            return "Configuration file contains an invalid rule '\(name)'"
 
         case .decodeFailed(let error):
             return """

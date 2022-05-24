@@ -1,7 +1,8 @@
-@testable import SwiftModCommands
-import XCTest
 import SwiftModCore
 import SwiftModRules
+import XCTest
+
+@testable import SwiftModCommands
 
 final class RulesCommandTests: XCTestCase {
     func testRun() throws {

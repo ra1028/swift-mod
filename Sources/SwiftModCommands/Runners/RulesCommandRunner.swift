@@ -50,15 +50,16 @@ internal struct RulesCommandRunner {
             .map { $0.name.count }
             .max() ?? 0
 
-        return ["RULES:\n"] + allRuleDescriptions.flatMap { description in
-            [
-                description.name
-                    .padding(toLength: maxIdentifierWidth + 4, withPad: " ", startingAt: 0)
-                    .offsetBeforeEachLines(2),
-                description.overview,
-                "\n"
-            ]
-        }
+        return ["RULES:\n"]
+            + allRuleDescriptions.flatMap { description in
+                [
+                    description.name
+                        .padding(toLength: maxIdentifierWidth + 4, withPad: " ", startingAt: 0)
+                        .offsetBeforeEachLines(2),
+                    description.overview,
+                    "\n",
+                ]
+            }
     }
 
     func run() throws {

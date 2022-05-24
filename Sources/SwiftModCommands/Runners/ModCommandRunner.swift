@@ -1,9 +1,9 @@
-import TSCBasic
-import SwiftModCore
 import Foundation
-import Yams
-import SwiftSyntaxParser
+import SwiftModCore
 import SwiftSyntax
+import SwiftSyntaxParser
+import TSCBasic
+import Yams
 
 internal struct ModCommandRunner {
     enum Error: Swift.Error, CustomStringConvertible {
@@ -56,15 +56,15 @@ internal struct ModCommandRunner {
         let message = "\(numberOfModifiedFiles)/\(numberOfTotalFiles) file\(numberOfModifiedFiles > 1 ? "s" : "") in \(results.time.formattedString())\n"
 
         switch mode {
-            case .modify:
-                InteractiveWriter.stdout.write("Completed modification " + message, inColor: .green)
+        case .modify:
+            InteractiveWriter.stdout.write("Completed modification " + message, inColor: .green)
 
-            case .dryRun:
-                InteractiveWriter.stdout.write("Completed dry run modification " + message, inColor: .green)
+        case .dryRun:
+            InteractiveWriter.stdout.write("Completed dry run modification " + message, inColor: .green)
 
-            case .check:
-                let isFailed = numberOfModifiedFiles > 0
-                InteractiveWriter.stdout.write("Completed check modification " + message, inColor: isFailed ? .red : .green)
+        case .check:
+            let isFailed = numberOfModifiedFiles > 0
+            InteractiveWriter.stdout.write("Completed check modification " + message, inColor: isFailed ? .red : .green)
         }
     }
 }

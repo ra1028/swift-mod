@@ -1,7 +1,7 @@
-import TSCBasic
 import ArgumentParser
 import Foundation
 import SwiftModCore
+import TSCBasic
 
 public struct ModCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(
@@ -9,7 +9,7 @@ public struct ModCommand: ParsableCommand {
         abstract: "Modifies Swift source code with rules",
         subcommands: [
             InitCommand.self,
-            RulesCommand.self
+            RulesCommand.self,
         ]
     )
 

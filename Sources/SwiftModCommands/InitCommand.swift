@@ -1,6 +1,6 @@
 import ArgumentParser
-import TSCBasic
 import Foundation
+import TSCBasic
 
 public struct InitCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(

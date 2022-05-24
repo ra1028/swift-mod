@@ -16,9 +16,9 @@ extension Configuration: Codable {
 
         try self.init(
             format: format,
-            rules: container.decode([String: DecoderInterceptor].self, forKey: .rules).map { identifier, interceptor in
-                guard let ruleType = allRuleMap[identifier] else {
-                    throw ConfigurationError.invalidRuleIdentifier(identifier)
+            rules: container.decode([String: DecoderInterceptor].self, forKey: .rules).map { rule, interceptor in
+                guard let ruleType = allRuleMap[rule] else {
+                    throw ConfigurationError.invalidRuleName(rule)
                 }
 
                 do {
