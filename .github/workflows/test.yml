@@ -1,9 +1,10 @@
-name: GitHub Actions
+name: test
 on:
   pull_request:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   linux:
@@ -36,16 +37,5 @@ jobs:
         run: |
           swift --version
           xcodebuild -version
-      - name: Get Ruby Gem Cache
-        uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: ${{ runner.os }}-gem-
-      - name: Install Ruby Gem
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: make gem-install
       - name: Run Test
         run: make test
-      - name: CocoaPods Lib Lint
-        run: make pod-lib-lint
