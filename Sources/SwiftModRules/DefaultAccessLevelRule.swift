@@ -3,7 +3,7 @@ import SwiftSyntax
 
 public final class DefaultAccessLevelRule: RuleDefinition {
     public static let description = RuleDescription(
-        identifier: "defaultAccessLevel",
+        name: "defaultAccessLevel",
         priority: .default,
         overview: "Assigns the suitable access level to all declaration syntaxes if not present",
         exampleOptions: Options(

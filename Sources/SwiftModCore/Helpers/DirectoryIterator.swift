@@ -1,7 +1,7 @@
 import Foundation
 import TSCBasic
 
-public protocol DirectoryEnumerable: class {
+public protocol DirectoryEnumerable: AnyObject {
     func next() -> AbsolutePath?
 }
 

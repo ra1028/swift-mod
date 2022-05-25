@@ -2,10 +2,10 @@ public struct Configuration {
     public static let defaultFileName = ".swift-mod.yml"
 
     public var format: Format?
-    public var targets: [String: Target]
+    public var rules: [AnyRule]
 
-    public init(format: Format?, targets: [String: Target]) {
+    public init(format: Format?, rules: [AnyRule]) {
         self.format = format
-        self.targets = targets
+        self.rules = rules
     }
 }

@@ -11,35 +11,22 @@ public extension Configuration {
 
         return Configuration(
             format: format,
-            targets: [
-                "main": Target(
-                    paths: [
-                        RelativePath(".")
-                    ],
-                    excludedPaths: [
-                        RelativePath(".build"),
-                        RelativePath("Package.swift"),
-                        RelativePath("**/main.swift"),
-                        RelativePath("**/XCTestManifests.swift"),
-                    ],
-                    rules: [
-                        DefaultAccessLevelRule(
-                            options: DefaultAccessLevelRule.Options(
-                                accessLevel: .openOrPublic,
-                                implicitInternal: true
-                            ),
-                            format: format
-                        ),
-                        DefaultMemberwiseInitializerRule(
-                            options: DefaultMemberwiseInitializerRule.Options(
-                                implicitInitializer: false,
-                                implicitInternal: true,
-                                ignoreClassesWithInheritance: false
-                            ),
-                            format: format
-                        ),
-                    ]
-                )
+            rules: [
+                DefaultAccessLevelRule(
+                    options: DefaultAccessLevelRule.Options(
+                        accessLevel: .openOrPublic,
+                        implicitInternal: true
+                    ),
+                    format: format
+                ),
+                DefaultMemberwiseInitializerRule(
+                    options: DefaultMemberwiseInitializerRule.Options(
+                        implicitInitializer: false,
+                        implicitInternal: true,
+                        ignoreClassesWithInheritance: false
+                    ),
+                    format: format
+                ),
             ]
         )
     }()

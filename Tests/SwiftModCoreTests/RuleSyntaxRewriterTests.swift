@@ -3,7 +3,7 @@ import SwiftSyntax
 import XCTest
 
 final class RuleSyntaxRewriterTests: XCTestCase {
-    let testRule = RuleSyntaxRewriter<Int>(identifier: "test", options: 0, format: .default)
+    let testRule = RuleSyntaxRewriter<Int>(name: "test", options: 0, format: .default)
 
     func testIgnoreCommentForMemberDeclListItem() {
         let node = SyntaxFactory.makeMemberDeclListItem(
