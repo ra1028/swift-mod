@@ -1,5 +1,5 @@
 SWIFT_FORMAT_PATHS := Sources $(shell find Tests -type f -name "*.swift")
-SWIFT_MOD_PATHS := $(shell find Sources -type f -name "*.swift" -not -name main.swift)
+SWIFT_MOD_PATHS := $(shell find Sources -type f -name "*.swift" -not -path "Sources/swift-mod/*")
 SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
