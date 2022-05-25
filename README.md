@@ -97,6 +97,7 @@ All commands can be display a usage by option `-h/--help`.
 
 - `run` (or not specified)
 
+```
 OVERVIEW: Runs modification.
 
 USAGE: swift-mod run [--mode <mode>] [--configuration <configuration>] [<paths> ...]
@@ -108,9 +109,11 @@ OPTIONS:
   -m, --mode <mode>                   Overrides running mode: modify|dry-run|check. (default: modify)
   -c, --configuration <configuration> The path to a configuration file.
   -h, --help                          Show help information.
+```
 
 - `init`
 
+```
 OVERVIEW: Generates a modify configuration file.
 
 USAGE: swift-mod init [--output <output>]
@@ -118,9 +121,11 @@ USAGE: swift-mod init [--output <output>]
 OPTIONS:
   -o, --output <output>   An output for the configuration file to be generated.
   -h, --help              Show help information.
+```
 
 - `rules`
 
+```
 OVERVIEW: Display the list of rules.
 
 USAGE: swift-mod rules [--rule <rule>]
@@ -128,6 +133,7 @@ USAGE: swift-mod rules [--rule <rule>]
 OPTIONS:
   -r, --rule <rule>       A rule name to see detail.
   -h, --help              Show help information.
+```
 
 ---
 
