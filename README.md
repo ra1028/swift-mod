@@ -72,7 +72,7 @@ swift-mod init
 
 ```sh
 swift-mod rules
-swift-mod rules --detail [RULE IDENTIFIER] # Display more detailed rule description
+swift-mod rules --rule [RULE NAME] # Display more detailed rule description
 ```
 
 4. Edit your configuration file with an editor you like, refering to the [documentation](#configuration).
@@ -80,7 +80,7 @@ swift-mod rules --detail [RULE IDENTIFIER] # Display more detailed rule descript
 5. Run
 
 ```sh
-swift-mod
+swift-mod <list of input files>
 ```
 
 ---
@@ -93,26 +93,45 @@ swift-mod [COMMAND] [OPTIONS]
 
 All commands can be display a usage by option `-h/--help`.
 
-- `run` (or not specified): Modifies Swift source code by rules.
+- `run` (or not specified)
 
-  |OPTION|SHORT|USAGE|
-  |:-|:-|:-|
-  |--configuration|-c|The path to a configuration Yaml file|
-  |--target|-t|The target name to be run partially|
-  |--dry-run||Run without actually changing any files|
-  |--check||Dry run that an error occurs if the any files should be changed|
+```
+OVERVIEW: Runs modification.
 
-- `init`: Generates a modify configuration file.
+USAGE: swift-mod run [--mode <mode>] [--configuration <configuration>] [<paths> ...]
 
-  |OPTION|SHORT|USAGE|
-  |:-|:-|:-|
-  |--output|-o|Path where the modify configuration should be generated|
+ARGUMENTS:
+  <paths>                 Zero or more input filenames.
 
-- `rules`: Display the list of rules and overview.
+OPTIONS:
+  -m, --mode <mode>                   Overrides running mode: modify|dry-run|check. (default: modify)
+  -c, --configuration <configuration> The path to a configuration file.
+  -h, --help                          Show help information.
+```
 
-  |OPTION|SHORT|USAGE|
-  |:-|:-|:-|
-  |--detail|-d|A rule identifier to displaying detailed description|
+- `init`
+
+```
+OVERVIEW: Generates a modify configuration file.
+
+USAGE: swift-mod init [--output <output>]
+
+OPTIONS:
+  -o, --output <output>   An output for the configuration file to be generated.
+  -h, --help              Show help information.
+```
+
+- `rules`
+
+```
+OVERVIEW: Display the list of rules.
+
+USAGE: swift-mod rules [--rule <rule>]
+
+OPTIONS:
+  -r, --rule <rule>       A rule name to see detail.
+  -h, --help              Show help information.
+```
 
 ---
 
@@ -122,7 +141,7 @@ Modification rules and targets are defines with YAML-formatted file. By default,
 Any file name is allowed with passing with option like follows:  
 
 ```sh
-swift-mod --configuration your-config-file.yml
+swift-mod --configuration <configuration>
 ```
 
 ### Example
@@ -131,25 +150,14 @@ swift-mod --configuration your-config-file.yml
 format:
   indent: 4
   lineBreakBeforeEachArgument: true
-targets:
-  main:
-    paths:
-      - "**/main.swift"
-    excludedPaths:
-      - Modules/
-    rules:
-      defaultAccessLevel:
-        accessLevel: internal
-        implicitInternal: true
-  module:
-    paths:
-      - Modules/
-    rules:
-      defaultAccessLevel:
-        accessLevel: openOrPublic
-        implicitInternal: true
-      defaultMemberwiseInitializer:
-        enabled: true
+rules:
+  defaultAccessLevel:
+    accessLevel: openOrPublic
+    implicitInternal: true
+  defaultMemberwiseInitializer:
+    implicitInitializer: false
+    implicitInternal: true
+    ignoreClassesWithInheritance: false
 ```
 
 ### Format
@@ -162,27 +170,7 @@ Format according to this setting only when changes occur.
 |indent|The number of spaces, or `tab` by text|Optional|4|
 |lineBreakBeforeEachArgument|Indicating whether to insert new lines before each function argument|Optional|true|
 
-### Targets
-
-Defines the several targets by name key that defines different paths or rules to apply.  
-Glob paths are allowed for `paths` and `excludedPaths`.  
-Each target can runs partially by command with option like follows:  
-
-```sh
-swift-mod --target [TARGET NAME]
-```
-
-|KEY|VALUE|REQUIREMENT|DEFAULT|
-|:-|:-|:-|:-|
-|paths|The file names or paths to be applied rules. The directory is recursively lookup.|Required||
-|excludedPaths|The file name or paths to be ecluded from resolved `paths`|Optional|None|
-|rules|The set of rules to be applied|Required||
-
 ### Rules
-
-Defines a modification rules enabled and its settings.  
-All rules are opt-in.  
-Rules where all settings are optional can specify only Boolean value indicating whether it's enabled by key `enabled`.  
 
 #### Default Access Level
 
@@ -322,12 +310,8 @@ So you should use swift-mod version that built with compatible version of Swift 
 |5.2          |0.0.4                           |
 |5.3          |0.0.5                           |
 |5.4          |0.0.6                           |
-|5.5          |latest                          |
-
-### Issue on macOS Before 10.14.4
-
-Swift tool binary that works with static-stdlib can't running on macOS before 10.14.4.  
-You need to update macOS or install the [Swift 5 Runtime Support for Command Line Tools](https://support.apple.com/kb/DL1998).  
+|5.5          |0.0.7                           |
+|5.6          |latest                          |
 
 ---
 
@@ -348,12 +332,6 @@ In addition, swift-mod supports running on Linux, so you should test by installi
 ```sh
 make docker-test
 ```
-
-### Known Issue
-
-Currently, swift-mod doesn't works properly with builds in `debug` configuration.  
-It may due to stack overflow with tail recursion in the method that enumerating the Swift file paths.  
-swift-mod works with optimizing tail recursion by builds in `release` configuration.  
 
 ---
 

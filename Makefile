@@ -1,4 +1,5 @@
-SWIFT_FORMAT_PATHS := Sources/ $(shell find Tests/**/*.swift -not -name XCTestManifests.swift)
+SWIFT_FORMAT_PATHS := Sources $(shell find Tests -type f -name "*.swift")
+SWIFT_MOD_PATHS := $(shell find Sources -type f -name "*.swift" -not -path "Sources/swift-mod/*")
 SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
@@ -18,9 +19,6 @@ TOOL_BIN := $(TOOL_BIN_DIR)/$(TOOL_NAME)
 
 .PHONY: $(MAKECMDGOALS)
 
-xcodeproj:
-	swift package generate-xcodeproj
-
 build:
 	swift build $(SWIFT_BUILD_FLAGS)
 	@echo $(TOOL_BIN)
@@ -29,7 +27,7 @@ test:
 	swift test -c release --parallel
 
 mod:
-	swift run -c release swift-mod
+	swift run -c release swift-mod $(SWIFT_MOD_PATHS)
 
 format:
 	swift run -c release --package-path ./Tools -- swift-format format --configuration .swift-format.json -i -r $(SWIFT_FORMAT_PATHS)

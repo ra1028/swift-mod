@@ -1,5 +1,5 @@
 public struct RuleDescription {
-    public var identifier: String
+    public var name: String
     public var priority: RulePriority
     public var overview: String
     public var exampleOptions: DynamicEncodable
@@ -7,14 +7,14 @@ public struct RuleDescription {
     public var exampleAfter: String
 
     public init<Options: Encodable>(
-        identifier: String,
+        name: String,
         priority: RulePriority,
         overview: String,
         exampleOptions: Options,
         exampleBefore: String,
         exampleAfter: String
     ) {
-        self.identifier = identifier
+        self.name = name
         self.priority = priority
         self.overview = overview
         self.exampleOptions = DynamicEncodable(encode: exampleOptions.encode)

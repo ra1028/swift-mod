@@ -1,7 +1,7 @@
 import Foundation
 import TSCBasic
 
-public protocol FileManagerProtocol: class {
+public protocol FileManagerProtocol: AnyObject {
     @discardableResult
     func createFile(atPath path: String) -> Bool
 

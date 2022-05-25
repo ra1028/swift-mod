@@ -9,18 +9,7 @@ func assertConfigurationCoding(_ configuration: Configuration, file: StaticStrin
         let decoded = try YAMLDecoder().decode(Configuration.self, from: encoded)
 
         XCTAssertEqual(configuration.format, decoded.format, file: file, line: line)
-        XCTAssertEqual(configuration.targets.count, decoded.targets.count, file: file, line: line)
-
-        for (name, target) in configuration.targets {
-            guard let decodedTarget = decoded.targets[name] else {
-                XCTFail("Decoded configuration has not a rule '\(name)'", file: file, line: line)
-                continue
-            }
-
-            XCTAssertEqual(target.paths, decodedTarget.paths, file: file, line: line)
-            XCTAssertEqual(target.excludedPaths, decodedTarget.excludedPaths, file: file, line: line)
-            XCTAssertEqual(target.rules.count, decodedTarget.rules.count, file: file, line: line)
-        }
+        XCTAssertEqual(configuration.rules.count, decoded.rules.count, file: file, line: line)
     }
     catch {
         XCTFail("\(error)", file: file, line: line)
@@ -33,7 +22,7 @@ final class ConfigurationCodableTests: XCTestCase {
     }
 
     func testNilFormatCodable() {
-        let configuration = Configuration(format: nil, targets: [:])
+        let configuration = Configuration(format: nil, rules: [])
         assertConfigurationCoding(configuration)
     }
 
@@ -43,7 +32,7 @@ final class ConfigurationCodableTests: XCTestCase {
                 indent: .tab,
                 lineBreakBeforeEachArgument: nil
             ),
-            targets: [:]
+            rules: []
         )
         assertConfigurationCoding(configuration)
     }

@@ -19,7 +19,7 @@ public extension RuleDefinable {
             isEnabled: isEnabled ?? true,
             makeRewriter: {
                 Rewriter(
-                    identifier: Self.description.identifier,
+                    name: Self.description.name,
                     options: options,
                     format: format
                 )

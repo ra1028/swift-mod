@@ -3,4 +3,5 @@
 /*.xcodeproj
 xcuserdata/
 .tmp
+.swiftpm/
 swift-mod.zip
