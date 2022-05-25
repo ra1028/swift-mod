@@ -1,7 +1,7 @@
 import ArgumentParser
 import TSCBasic
 
-public enum Mode: String, ExpressibleByArgument {
+public enum Mode: String, CaseIterable, ExpressibleByArgument {
     case modify
     case dryRun = "dry-run"
     case check

@@ -4,10 +4,13 @@ import SwiftModCore
 public struct RulesCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(
         commandName: "rules",
-        abstract: "Display the list of rules"
+        abstract: "Display the list of rules."
     )
 
-    @Option
+    @Option(
+        name: .shortAndLong,
+        help: "A rule name to see detail."
+    )
     private var rule: String?
 
     public init() {}

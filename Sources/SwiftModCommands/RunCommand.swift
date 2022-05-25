@@ -6,16 +6,24 @@ import TSCBasic
 public struct RunCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(
         commandName: "run",
-        abstract: "Runs modification"
+        abstract: "Runs modification."
     )
 
-    @Option(name: .shortAndLong)
+    @Option(
+        name: .shortAndLong,
+        help: "Overrides running mode: \(Mode.allCases.map(\.rawValue).joined(separator: "|"))."
+    )
     private var mode: Mode = .modify
 
-    @Option(name: .shortAndLong)
+    @Option(
+        name: .shortAndLong,
+        help: "The path to a configuration file."
+    )
     private var configuration: AbsolutePath?
 
-    @Argument
+    @Argument(
+        help: "Zero or more input filenames."
+    )
     private var paths: [AbsolutePath]
 
     public init() {}

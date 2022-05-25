@@ -5,10 +5,13 @@ import TSCBasic
 public struct InitCommand: ParsableCommand {
     public static var configuration = CommandConfiguration(
         commandName: "init",
-        abstract: "Generates a modify configuration file"
+        abstract: "Generates a modify configuration file."
     )
 
-    @Option(name: .shortAndLong)
+    @Option(
+        name: .shortAndLong,
+        help: "An output for the configuration file to be generated."
+    )
     private var output: AbsolutePath?
 
     public init() {}
