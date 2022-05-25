@@ -2,12 +2,10 @@
 
 A tool for Swift code modification intermediating between code generation and formatting.
 
-[![Swift5](https://img.shields.io/badge/language-Swift5-orange.svg)](https://developer.apple.com/swift)
-[![Release](https://img.shields.io/github/release/ra1028/swift-mod.svg)](https://github.com/ra1028/swift-mod/releases/latest)
-[![Swift Package Manager](https://img.shields.io/badge/SwiftPM-compatible-blue.svg)](https://swift.org/package-manager)
-[![CocoaPods](https://img.shields.io/cocoapods/v/swift-mod.svg)](https://cocoapods.org/pods/swift-mod)
-[![CI Status](https://github.com/ra1028/swift-mod/workflows/GitHub%20Actions/badge.svg)](https://github.com/ra1028/swift-mod/actions)
-[![Lincense](http://img.shields.io/badge/License-Apache%202.0-black.svg)](https://github.com/ra1028/swift-mod/blob/master/LICENSE)
+[![swift](https://img.shields.io/badge/language-Swift5-orange.svg)](https://developer.apple.com/swift)
+[![release](https://img.shields.io/github/release/ra1028/swift-mod.svg)](https://github.com/ra1028/swift-mod/releases/latest)
+[![test](https://github.com/ra1028/swift-mod/workflows/GitHub%20Actions/badge.svg)](https://github.com/ra1028/swift-mod/actions)
+[![lincense](http://img.shields.io/badge/License-Apache%202.0-black.svg)](https://github.com/ra1028/swift-mod/blob/master/LICENSE)
 
 ---
 
@@ -279,9 +277,7 @@ struct Avenger {
 
 ## Installation
 
-`swift-mod` doesn't support [HomeBrew](http://brew.sh/) because it's hard to keep backward compatibility due to depended on the version of Swift toolchain you are using.  
-
-### Using [Swift Package Manager](https://github.com/apple/swift-package-manager)
+### [Swift Package Manager](https://github.com/apple/swift-package-manager)
 
 Add the following to the dependencies of your `Package.swift`:
 
@@ -297,7 +293,7 @@ Run command:
 swift run -c release swift-mod [COMMAND] [OPTIONS]
 ```
 
-### Using [Mint](https://github.com/yonaskolb/Mint)
+### [Mint](https://github.com/yonaskolb/Mint)
 
 Install with Mint by following command:
 
@@ -311,22 +307,9 @@ Run command:
 mint run ra1028/swift-mod [COMMAND] [OPTIONS]
 ```
 
-### Using [CocoaPods](https://github.com/CocoaPods/CocoaPods)
+### Using a pre-built binary
 
-Add the following to your `Podfile`:
-
-```sh
-pod 'swift-mod'
-```
-
-Run command:
-
-```sh
-Pods/swift-mod/swift-mod [COMMAND] [OPTIONS]
-```
-
-\* If you have changed the name of `Xcode.app` used in toolchain (`xcode-select -p`), `swift-mod` via CocoaPods can't be excuted. Please set the Xcode name to `Xcode.app`. (See: https://forums.swift.org/t/swiftsyntax-with-swift-5-1/29051)  
-
+You can also install swift-mod by downloading `swift-mod.zip` from the latest GitHub release.
 
 ### Swift Version Support
 

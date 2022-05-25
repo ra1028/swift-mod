@@ -2,7 +2,5 @@
 .build
 /*.xcodeproj
 xcuserdata/
-vendor/
-.bundle/
 .tmp
 swift-mod.zip

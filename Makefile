@@ -39,23 +39,12 @@ lint:
 
 autocorrect: mod format lint
 
-pod-lib-lint:
-	bundle exec pod lib lint
-
-pod-trunk-push:
-	bundle exec pod trunk push --skip-tests --skip-import-validation swift-mod.podspec
-
 ubuntu-deps:
 	apt-get update --assume-yes
 	apt-get install --assume-yes libsqlite3-dev libncurses-dev
 
 docker-test:
 	docker run -v `pwd`:`pwd` -w `pwd` --rm $(DOCKER_IMAGE_NAME) make ubuntu-deps test
-
-gem-install:
-	bundle config path vendor/bundle
-	bundle config unset frozen
-	bundle install --jobs 4 --retry 3
 
 zip: build
 	install_name_tool -add_rpath @loader_path -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN) 2>/dev/null || true
