@@ -311,7 +311,8 @@ So you should use swift-mod version that built with compatible version of Swift 
 |5.3          |0.0.5                           |
 |5.4          |0.0.6                           |
 |5.5          |0.0.7                           |
-|5.6          |latest                          |
+|5.6          |0.1.0                           |
+|5.7          |latest                          |
 
 ---
 
