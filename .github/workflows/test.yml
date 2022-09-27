@@ -9,15 +9,17 @@ on:
 jobs:
   linux:
     name: Test on Linux
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     container:
-      image: swift:5.6
+      image: swift:5.7
     steps:
       - uses: actions/checkout@v2
       - name: Show Environments
         run: swift --version
       - name: Install missing dependencies in ubuntu
-        run: make ubuntu-deps
+        run: |
+          apt-get update --assume-yes
+          apt-get install --assume-yes libsqlite3-dev libncurses-dev make
       - name: Validate Source Code
         run: make autocorrect && [ -z "$(git status --porcelain)" ]
       - name: Run Test
@@ -28,7 +30,7 @@ jobs:
     strategy:
       matrix:
         xcode_version:
-          - "13.3"
+          - "14.0.1"
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
     steps:

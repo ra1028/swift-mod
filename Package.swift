@@ -14,7 +14,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "0.50600.1")),
+        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "0.50700.0")),
         .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "1.1.2")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.2.3"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
