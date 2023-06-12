@@ -146,7 +146,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
             return visitChildren(node)
         }
 
-        let parentIndentTrivia = node.firstToken?.leadingTrivia.indentation ?? Trivia()
+        let parentIndentTrivia = node.firstToken(viewMode: .sourceAccurate)?.leadingTrivia.indentation ?? Trivia()
         let indentTrivia = parentIndentTrivia + format.indent.trivia
         let parameterIndentTrivia = indentTrivia + format.indent.trivia
         let shouldLineBreakParameters = format.lineBreakBeforeEachArgument && storedProperties.count > 1
@@ -262,7 +262,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
         let member = MemberDeclListItemSyntax(decl: DeclSyntax(initializerDecl), semicolon: nil)
 
         // If originally has members.
-        if let lastMemberToken = memberList.lastToken {
+        if let lastMemberToken = memberList.lastToken(viewMode: .sourceAccurate) {
             let newMemberList =
                 TokenSyntax
                 .replacingTrivia(memberList, for: lastMemberToken, trailing: .newlines(2))

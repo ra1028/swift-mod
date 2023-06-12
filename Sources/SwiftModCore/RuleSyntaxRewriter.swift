@@ -26,7 +26,8 @@ open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewri
         // Whether to extract ignore options from comments
         let shouldExtractNode = node.is(MemberDeclListItemSyntax.self) || node.is(CodeBlockItemSyntax.self)
 
-        guard shouldExtractNode, let leadingTrivia = node.firstToken?.leadingTrivia else {
+        guard shouldExtractNode,
+              let leadingTrivia = node.firstToken(viewMode: .sourceAccurate)?.leadingTrivia else {
             return nil
         }
 

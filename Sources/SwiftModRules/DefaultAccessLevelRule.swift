@@ -272,7 +272,9 @@ private extension DefaultAccessLevelRule.Rewriter {
         }
 
         // If originally has modifiers.
-        if let modifier = modifier, let firstModifier = modifiers.first, let firstModifierToken = firstModifier.firstToken {
+        if let modifier = modifier,
+           let firstModifier = modifiers.first,
+           let firstModifierToken = firstModifier.firstToken(viewMode: .sourceAccurate) {
             // Prepends an access level modifier that exchanged the leading trivia.
             let (leading, trailing) = TokenSyntax.movingLeadingTrivia(
                 leading: modifier,
@@ -283,7 +285,8 @@ private extension DefaultAccessLevelRule.Rewriter {
             let newModifiers = ModifierListSyntax([leading, trailing] + Array(modifiers.dropFirst()))
             return visitFinally(replacingModifiers(node, newModifiers))
         }
-        else if let modifier = modifier, let nodeToken = getDeclKeyword(node).firstToken {
+        else if let modifier = modifier,
+                let nodeToken = getDeclKeyword(node).firstToken(viewMode: .sourceAccurate) {
             // Assigns an access level modifier that exchanged the leading trivia.
             let (newModifier, newNode) = TokenSyntax.movingLeadingTrivia(
                 leading: modifier,

@@ -28,6 +28,6 @@ public final class DirectoryIterator: DirectoryEnumerable, IteratorProtocol {
             return nil
         }
 
-        return AbsolutePath(pathURL.path)
+        return try? AbsolutePath(validating: pathURL.path)
     }
 }
