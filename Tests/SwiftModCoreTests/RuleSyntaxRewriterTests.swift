@@ -6,23 +6,23 @@ final class RuleSyntaxRewriterTests: XCTestCase {
     let testRule = RuleSyntaxRewriter<Int>(name: "test", options: 0, format: .default)
 
     func testIgnoreCommentForMemberDeclListItem() {
-        let node = SyntaxFactory.makeMemberDeclListItem(
+        let node = MemberDeclListItemSyntax(
             decl: DeclSyntax(
-                SyntaxFactory.makeVariableDecl(
+                VariableDeclSyntax(
                     attributes: nil,
                     modifiers: nil,
-                    letOrVarKeyword: SyntaxFactory.makeLetKeyword(),
-                    bindings: SyntaxFactory.makePatternBindingList([
-                        SyntaxFactory.makePatternBinding(
+                    bindingKeyword: .keyword(.let),
+                    bindings: PatternBindingListSyntax([
+                        PatternBindingSyntax(
                             pattern: PatternSyntax(
-                                SyntaxFactory.makeIdentifierPattern(
-                                    identifier: SyntaxFactory.makeIdentifier("test")
+                                IdentifierPatternSyntax(
+                                    identifier: .identifier("test")
                                 )
                             ),
                             typeAnnotation: nil,
-                            initializer: SyntaxFactory.makeInitializerClause(
-                                equal: SyntaxFactory.makeEqualToken(),
-                                value: ExprSyntax(SyntaxFactory.makeVariableExpr("100"))
+                            initializer: InitializerClauseSyntax(
+                                equal: .equalToken(),
+                                value: IntegerLiteralExprSyntax(digits: .integerLiteral("100"))
                             ),
                             accessor: nil,
                             trailingComma: nil
@@ -34,9 +34,9 @@ final class RuleSyntaxRewriterTests: XCTestCase {
         )
 
         let notIgnoreNode = testRule.visitAny(Syntax(node))
-        let ignoreTestNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore: test"))))
-        let ignoreOtherNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore: other"))))
-        let ignoreAllNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore"))))
+        let ignoreTestNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore: test"))))
+        let ignoreOtherNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore: other"))))
+        let ignoreAllNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore"))))
 
         XCTAssertNil(notIgnoreNode)
         XCTAssertNotNil(ignoreTestNode)
@@ -45,16 +45,15 @@ final class RuleSyntaxRewriterTests: XCTestCase {
     }
 
     func testIgnoreCommentForCodeBlockItem() {
-        let node = SyntaxFactory.makeCodeBlockItem(
-            item: Syntax(SyntaxFactory.makeIdentifier("test")),
-            semicolon: nil,
-            errorTokens: nil
+        let node = CodeBlockItemSyntax(
+            item: .expr(ExprSyntax(IdentifierExprSyntax(identifier: .identifier("test")))),
+            semicolon: nil
         )
 
         let notIgnoreNode = testRule.visitAny(Syntax(node))
-        let ignoreTestNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore: test"))))
-        let ignoreOtherNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore: other"))))
-        let ignoreAllNode = testRule.visitAny(Syntax(node.withLeadingTrivia(.lineComment("swift-mod-ignore"))))
+        let ignoreTestNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore: test"))))
+        let ignoreOtherNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore: other"))))
+        let ignoreAllNode = testRule.visitAny(Syntax(node.with(\.leadingTrivia, .lineComment("swift-mod-ignore"))))
 
         XCTAssertNil(notIgnoreNode)
         XCTAssertNotNil(ignoreTestNode)

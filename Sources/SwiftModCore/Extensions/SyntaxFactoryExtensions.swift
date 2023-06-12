@@ -1,16 +1,16 @@
 import SwiftSyntax
 
-public extension SyntaxFactory {
+public extension TokenSyntax {
     static func makeOpenKeyward() -> TokenSyntax {
-        makeIdentifier(TokenKind.openKeywardText)
+        .keyword(.open)
     }
 
     static func makeDeclModifier(name: TokenSyntax) -> DeclModifierSyntax {
-        makeDeclModifier(name: name, detailLeftParen: nil, detail: nil, detailRightParen: nil)
+        DeclModifierSyntax(name: name)
     }
 
     static func makeNilExpr() -> NilLiteralExprSyntax {
-        makeNilLiteralExpr(nilKeyword: SyntaxFactory.makeNilKeyword())
+        NilLiteralExprSyntax(nilKeyword: .keyword(.nil))
     }
 
     static func replacingTrivia<S: SyntaxProtocol>(
@@ -47,13 +47,11 @@ private final class TriviaReplacer: SyntaxRewriter {
         self.trailing = trailing ?? token.trailingTrivia
     }
 
-    override func visit(_ token: TokenSyntax) -> Syntax {
-        guard token == self.token else { return Syntax(token) }
+    override func visit(_ token: TokenSyntax) -> TokenSyntax {
+        guard token == self.token else { return token }
 
-        return Syntax(
-            token
-                .withLeadingTrivia(leading)
-                .withTrailingTrivia(trailing)
-        )
+        return token
+            .with(\.leadingTrivia, leading)
+            .with(\.trailingTrivia, trailing)
     }
 }

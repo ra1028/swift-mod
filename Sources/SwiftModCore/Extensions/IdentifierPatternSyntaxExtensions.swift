@@ -9,11 +9,11 @@ public extension IdentifierPatternSyntax {
 }
 
 private final class IdentifierBackticksRemover: SyntaxRewriter {
-    override func visit(_ token: TokenSyntax) -> Syntax {
+    override func visit(_ token: TokenSyntax) -> TokenSyntax {
         guard case .identifier(let text) = token.tokenKind else {
-            return Syntax(token)
+            return token
         }
 
-        return Syntax(token.withKind(.identifier(text.replacingOccurrences(of: "`", with: ""))))
+        return token.with(\.tokenKind, .identifier(text.replacingOccurrences(of: "`", with: "")))
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftModCore
 import SwiftSyntax
-import SwiftSyntaxParser
+import SwiftParser
 import TSCBasic
 import Yams
 
@@ -110,7 +110,7 @@ private extension RunCommandRunner {
 
                     do {
                         source = try self.fileSystem.readFileContents(path).cString
-                        syntax = try Syntax(SyntaxParser.parse(source: source))
+                        syntax = Syntax(Parser.parse(source: source))
                         modifiedSyntax = pipeline.visit(syntax)
                     }
                     catch {

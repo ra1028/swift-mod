@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax",
       "state" : {
-        "revision" : "04d4497be6b88e524a71778d828790e9589ae1c4",
-        "version" : "0.50700.0"
+        "revision" : "165fc6d22394c1168ff76ab5d951245971ef07e5",
+        "version" : "509.0.0-swift-DEVELOPMENT-SNAPSHOT-2023-06-05-a"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-tools-support-core.git",
       "state" : {
-        "revision" : "0b77e67c484e532444ceeab60119b8536f8cd648",
-        "version" : "0.3.0"
+        "revision" : "93784c59434dbca8e8a9e4b700d0d6d94551da6a",
+        "version" : "0.5.2"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams.git",
       "state" : {
-        "revision" : "01835dc202670b5bb90d07f3eae41867e9ed29f6",
-        "version" : "5.0.1"
+        "revision" : "f47ba4838c30dbd59998a4e4c87ab620ff959e8a",
+        "version" : "5.0.5"
       }
     }
   ],
