@@ -11,7 +11,7 @@ public extension TokenSyntax {
 
     func withLeadingTrivia(_ leadingTrivia: Trivia, condition: Bool) -> TokenSyntax {
         if condition {
-            return withLeadingTrivia(leadingTrivia)
+            return with(\.leadingTrivia, leadingTrivia)
         }
         else {
             return self
@@ -20,7 +20,7 @@ public extension TokenSyntax {
 
     func withTrailingTrivia(_ trailingTrivia: Trivia, condition: Bool) -> TokenSyntax {
         if condition {
-            return withTrailingTrivia(trailingTrivia)
+            return with(\.trailingTrivia, trailingTrivia)
         }
         else {
             return self

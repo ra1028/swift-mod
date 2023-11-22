@@ -20,6 +20,6 @@ public extension VariableDeclSyntax {
     }
 
     var hasAccessor: Bool {
-        bindings.contains { $0.accessor != nil }
+        bindings.contains { $0.accessorBlock != nil }
     }
 }

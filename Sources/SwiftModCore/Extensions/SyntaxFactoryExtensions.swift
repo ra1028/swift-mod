@@ -1,18 +1,7 @@
+// Should be renamed to TokenSyntax
 import SwiftSyntax
 
-public extension SyntaxFactory {
-    static func makeOpenKeyward() -> TokenSyntax {
-        makeIdentifier(TokenKind.openKeywardText)
-    }
-
-    static func makeDeclModifier(name: TokenSyntax) -> DeclModifierSyntax {
-        makeDeclModifier(name: name, detailLeftParen: nil, detail: nil, detailRightParen: nil)
-    }
-
-    static func makeNilExpr() -> NilLiteralExprSyntax {
-        makeNilLiteralExpr(nilKeyword: SyntaxFactory.makeNilKeyword())
-    }
-
+public extension TokenSyntax {
     static func replacingTrivia<S: SyntaxProtocol>(
         _ node: S,
         for token: TokenSyntax,
@@ -20,7 +9,7 @@ public extension SyntaxFactory {
         trailing: Trivia? = nil
     ) -> S {
         TriviaReplacer(for: token, leading: leading, trailing: trailing)
-            .visit(Syntax(node))
+            .rewrite(Syntax(node))
             .as(S.self)!
     }
 
@@ -47,13 +36,11 @@ private final class TriviaReplacer: SyntaxRewriter {
         self.trailing = trailing ?? token.trailingTrivia
     }
 
-    override func visit(_ token: TokenSyntax) -> Syntax {
-        guard token == self.token else { return Syntax(token) }
+    override func visit(_ token: TokenSyntax) -> TokenSyntax {
+        guard token == self.token else { return token }
 
-        return Syntax(
-            token
-                .withLeadingTrivia(leading)
-                .withTrailingTrivia(trailing)
-        )
+        return token
+            .with(\.leadingTrivia, leading)
+            .with(\.trailingTrivia, trailing)
     }
 }
