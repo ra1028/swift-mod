@@ -14,8 +14,8 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "0.50700.0")),
         .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "1.1.2")),
+        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "509.0.1")),
         .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.2.3"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
     ],
@@ -46,7 +46,7 @@ let package = Package(
         .target(
             name: "SwiftModCore",
             dependencies: [
-                .product(name: "SwiftSyntaxParser", package: "swift-syntax"),
+                .product(name: "SwiftParser", package: "swift-syntax"),
                 .product(name: "SwiftToolsSupport-auto", package: "swift-tools-support-core"),
                 "Yams",
             ]
