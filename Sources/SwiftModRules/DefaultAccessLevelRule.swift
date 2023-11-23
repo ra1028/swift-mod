@@ -68,7 +68,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.structKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: super.visit
             )
         }
@@ -76,9 +76,9 @@ public final class DefaultAccessLevelRule: RuleDefinition {
         public override func visit(_ node: ClassDeclSyntax) -> DeclSyntax {
             visit(
                 node,
-                getDeclKeyword: { $0.classOrActorKeyword },
+                getDeclKeyword: { $0.classKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: super.visit
             )
         }
@@ -88,7 +88,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.enumKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: super.visit
             )
         }
@@ -98,27 +98,27 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.extensionKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: super.visit
             )
         }
 
-        public override func visit(_ node: TypealiasDeclSyntax) -> DeclSyntax {
+        public override func visit(_ node: TypeAliasDeclSyntax) -> DeclSyntax {
             visit(
                 node,
                 getDeclKeyword: { $0.typealiasKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
 
-        public override func visit(_ node: AssociatedtypeDeclSyntax) -> DeclSyntax {
+        public override func visit(_ node: AssociatedTypeDeclSyntax) -> DeclSyntax {
             visit(
                 node,
                 getDeclKeyword: { $0.associatedtypeKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -128,7 +128,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.protocolKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -136,9 +136,9 @@ public final class DefaultAccessLevelRule: RuleDefinition {
         public override func visit(_ node: VariableDeclSyntax) -> DeclSyntax {
             visit(
                 node,
-                getDeclKeyword: { $0.letOrVarKeyword },
+                getDeclKeyword: { $0.bindingSpecifier },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -148,7 +148,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.funcKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -158,7 +158,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.subscriptKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -168,7 +168,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
                 node,
                 getDeclKeyword: { $0.initKeyword },
                 getModifiers: { $0.modifiers },
-                replacingModifiers: { $0.withModifiers($1) },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
                 visitChildren: nil
             )
         }
@@ -190,13 +190,13 @@ private extension DefaultAccessLevelRule.Rewriter {
     func visit<Node: DeclSyntaxProtocol>(
         _ node: Node,
         getDeclKeyword: (Node) -> TokenSyntax,
-        getModifiers: (Node) -> ModifierListSyntax?,
-        replacingModifiers: (Node, ModifierListSyntax) -> Node,
+        getModifiers: (Node) -> DeclModifierListSyntax?,
+        replacingModifiers: (Node, DeclModifierListSyntax) -> Node,
         visitChildren: ((Node) -> DeclSyntax)?
     ) -> DeclSyntax {
         let implicitInternal = options.implicitInternal ?? true
 
-        let modifiers = getModifiers(node) ?? SyntaxFactory.makeModifierList([])
+        let modifiers = getModifiers(node) ?? DeclModifierListSyntax([])
         let visitFinally = visitChildren ?? DeclSyntax.init
         let parentVisit = visitStack.top
 
@@ -232,24 +232,24 @@ private extension DefaultAccessLevelRule.Rewriter {
                 let shouldOpen = canOpenInParent && !modifiers.hasFinal && !modifiers.hasStatic
                 modifierTokenToAssign =
                     shouldOpen
-                    ? SyntaxFactory.makeOpenKeyward()
-                    : SyntaxFactory.makePublicKeyword()
+                    ? .keyword(.open)
+                    : .keyword(.public)
                 actualAccessLevel = shouldOpen ? .openOrPublic : .public
 
             case .public:
-                modifierTokenToAssign = SyntaxFactory.makePublicKeyword()
+                modifierTokenToAssign = .keyword(.public)
                 actualAccessLevel = .public
 
             case .internal:
-                modifierTokenToAssign = implicitInternal ? nil : SyntaxFactory.makeInternalKeyword()
+                modifierTokenToAssign = implicitInternal ? nil : .keyword(.internal)
                 actualAccessLevel = .internal
 
             case .fileprivate:
-                modifierTokenToAssign = SyntaxFactory.makeFileprivateKeyword()
+                modifierTokenToAssign = .keyword(.fileprivate)
                 actualAccessLevel = .fileprivate
 
             case .private:
-                modifierTokenToAssign = SyntaxFactory.makePrivateKeyword()
+                modifierTokenToAssign = .keyword(.private)
                 actualAccessLevel = .private
             }
         }
@@ -268,32 +268,30 @@ private extension DefaultAccessLevelRule.Rewriter {
         )
 
         let modifier = modifierTokenToAssign.map { token in
-            DeclModifierSyntax { builder in
-                builder.useName(token.withTrailingTrivia(.spaces(1)))
-            }
+            DeclModifierSyntax(name: token.with(\.trailingTrivia, .spaces(1)))
         }
 
         // If originally has modifiers.
-        if let modifier = modifier, let firstModifier = modifiers.first, let firstModifierToken = firstModifier.firstToken {
+        if let modifier = modifier, let firstModifier = modifiers.first, let firstModifierToken = firstModifier.firstToken(viewMode: .sourceAccurate) {
             // Prepends an access level modifier that exchanged the leading trivia.
-            let (leading, trailing) = SyntaxFactory.movingLeadingTrivia(
+            let (leading, trailing) = TokenSyntax.movingLeadingTrivia(
                 leading: modifier,
                 for: modifier.name,
                 trailing: firstModifier,
                 for: firstModifierToken
             )
-            let newModifiers = SyntaxFactory.makeModifierList([leading, trailing] + Array(modifiers.dropFirst()))
+            let newModifiers = DeclModifierListSyntax([leading, trailing] + Array(modifiers.dropFirst()))
             return visitFinally(replacingModifiers(node, newModifiers))
         }
-        else if let modifier = modifier, let nodeToken = getDeclKeyword(node).firstToken {
+        else if let modifier = modifier, let nodeToken = getDeclKeyword(node).firstToken(viewMode: .sourceAccurate) {
             // Assigns an access level modifier that exchanged the leading trivia.
-            let (newModifier, newNode) = SyntaxFactory.movingLeadingTrivia(
+            let (newModifier, newNode) = TokenSyntax.movingLeadingTrivia(
                 leading: modifier,
                 for: modifier.name,
                 trailing: node,
                 for: nodeToken
             )
-            let newModifiers = SyntaxFactory.makeModifierList([newModifier])
+            let newModifiers = DeclModifierListSyntax([newModifier])
             return visitFinally(replacingModifiers(newNode, newModifiers))
         }
         else {
@@ -354,23 +352,23 @@ private extension DeclSyntaxProtocol {
     }
 }
 
-private extension ModifierListSyntax {
+private extension DeclModifierListSyntax {
     var accessLevel: DefaultAccessLevelRule.AccessLebel? {
         accessLevelModifier.flatMap { modifier in
             switch modifier.name.tokenKind {
             case .openKeyward:
                 return .openOrPublic
 
-            case .publicKeyword:
+            case .keyword(.public):
                 return .public
 
-            case .internalKeyword:
+            case .keyword(.internal):
                 return .internal
 
-            case .fileprivateKeyword:
+            case .keyword(.fileprivate):
                 return .fileprivate
 
-            case .privateKeyword:
+            case .keyword(.private):
                 return .private
 
             default:
