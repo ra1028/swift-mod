@@ -2,7 +2,7 @@ import SwiftSyntax
 
 public extension DeclModifierListSyntax {
     var hasFinal: Bool {
-        contains { $0.name.tokenKind == .finalKeyward }
+        contains { $0.name.tokenKind == .keyword(.final) }
     }
 
     var hasStatic: Bool {
