@@ -192,7 +192,7 @@ final class DefaultAccessLevelRuleTests: XCTestCase {
         )
     }
 
-    func testClassNotTriggered() throws {
+    func testClassInternalNotTriggered() throws {
         try assertRule(
             defaultRule,
             source: """
@@ -210,6 +210,18 @@ final class DefaultAccessLevelRuleTests: XCTestCase {
                     }
                     var stored: Int
                 }
+                """
+        )
+    }
+
+    func testClassOpenNotTriggered() throws {
+        try assertRule(
+            defaultRule,
+            source: """
+                open class Class {}
+                """,
+            expected: """
+                open class Class {}
                 """
         )
     }

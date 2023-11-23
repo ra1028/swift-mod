@@ -11,7 +11,7 @@ public protocol RuleSyntaxRewriterProtocol: SyntaxRewriter {
     init(name: String, options: Options, format: Format)
 }
 
-open open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewriterProtocol {
+open class RuleSyntaxRewriter<Options: Codable>: SyntaxRewriter, RuleSyntaxRewriterProtocol {
     public let name: String
     public let options: Options
     public let format: Format

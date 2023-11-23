@@ -356,7 +356,7 @@ private extension DeclModifierListSyntax {
     var accessLevel: DefaultAccessLevelRule.AccessLebel? {
         accessLevelModifier.flatMap { modifier in
             switch modifier.name.tokenKind {
-            case .openKeyward:
+            case .keyword(.open):
                 return .openOrPublic
 
             case .keyword(.public):

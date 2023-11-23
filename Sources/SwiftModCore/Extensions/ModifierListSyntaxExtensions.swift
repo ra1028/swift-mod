@@ -12,7 +12,7 @@ public extension DeclModifierListSyntax {
     var accessLevelModifier: DeclModifierSyntax? {
         first { modifier in
             switch modifier.name.tokenKind {
-            case .openKeyward,
+            case .keyword(.open),
                 .keyword(.public),
                 .keyword(.internal),
                 .keyword(.fileprivate),

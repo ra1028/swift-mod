@@ -307,7 +307,7 @@ private extension TokenSyntax {
 private extension DeclModifierSyntax {
     var assignableToInitializer: DeclModifierSyntax? {
         switch name.tokenKind {
-        case .openKeyward:
+        case .keyword(.open):
             return with(\.name, .keyword(.public))
 
         case .keyword(.public):
