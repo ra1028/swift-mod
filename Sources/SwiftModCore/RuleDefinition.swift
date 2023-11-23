@@ -51,7 +51,7 @@ public protocol AnyRule: Rule {
     init(from decoder: Decoder, format: Format) throws
 }
 
-open class Rule {
+open open class Rule {
     public let isEnabled: Bool
 
     private let makeRewriter: () -> SyntaxRewriter

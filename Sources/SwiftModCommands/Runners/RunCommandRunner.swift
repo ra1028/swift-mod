@@ -1,7 +1,7 @@
 import Foundation
 import SwiftModCore
-import SwiftSyntax
 import SwiftParser
+import SwiftSyntax
 import TSCBasic
 import Yams
 

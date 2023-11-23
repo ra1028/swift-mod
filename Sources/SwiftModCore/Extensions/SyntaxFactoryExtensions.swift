@@ -39,7 +39,8 @@ private final class TriviaReplacer: SyntaxRewriter {
     override func visit(_ token: TokenSyntax) -> TokenSyntax {
         guard token == self.token else { return token }
 
-        return token
+        return
+            token
             .with(\.leadingTrivia, leading)
             .with(\.trailingTrivia, trailing)
     }

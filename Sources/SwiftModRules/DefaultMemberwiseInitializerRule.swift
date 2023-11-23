@@ -112,20 +112,20 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
         let members = getMembers(node)
         let memberList = members.members
 
-        let storedProperties: [StoredProperty] = memberList.compactMap { item  in
+        let storedProperties: [StoredProperty] = memberList.compactMap { item in
             guard let variableDecl = item.decl.as(VariableDeclSyntax.self) else {
                 return nil
             }
 
-            let hasStatic = variableDecl.modifiers.hasStatic 
+            let hasStatic = variableDecl.modifiers.hasStatic
             let hasAccessor = variableDecl.hasAccessor
             let value = variableDecl.value
             // The variable that defined as `let` and already initialized once is not need a initializer parameter..
             let isAlreadyInitialized = variableDecl.bindingSpecifier.isLet && value != nil
 
             guard !hasStatic && !hasAccessor && !isAlreadyInitialized,
-                  let identifierPattern = variableDecl.identifier?.trimmed,
-                  let type = variableDecl.typeAnnotation?.trimmed.type.transformed()
+                let identifierPattern = variableDecl.identifier?.trimmed,
+                let type = variableDecl.typeAnnotation?.trimmed.type.transformed()
             else {
                 return nil
             }
@@ -241,8 +241,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
         )
 
         // Use default access level modifier or make new internal access level modifier if not present.
-        let newAcessLevelModifier = (accessLevelModifier ??
-                                     DeclModifierSyntax(name:  TokenSyntax.keyword(.internal)))
+        let newAcessLevelModifier = (accessLevelModifier ?? DeclModifierSyntax(name: TokenSyntax.keyword(.internal)))
             .with(\.leadingTrivia, indentTrivia)
             .with(\.trailingTrivia, .space)
         // Indicating whether to assign internal access level explicitly.
