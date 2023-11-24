@@ -43,7 +43,7 @@ docker-test:
 zip: build
 	install_name_tool -add_rpath @loader_path -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN) 2>/dev/null || true
 	rm -f $(TOOL_NAME).zip
-	zip -j $(TOOL_NAME).zip $(TOOL_BIN) $(TOOL_BIN_DIR)/lib_InternalSwiftSyntaxParser.dylib LICENSE
+	zip -j $(TOOL_NAME).zip $(TOOL_BIN) LICENSE
 
 upload-zip: zip
 	@[ -n "$(GITHUB_TOKEN)" ] || (echo "\nERROR: Make sure setting environment variable 'GITHUB_TOKEN'." && exit 1)
