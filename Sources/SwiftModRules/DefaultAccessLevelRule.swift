@@ -268,7 +268,7 @@ private extension DefaultAccessLevelRule.Rewriter {
         )
 
         let modifier = modifierTokenToAssign.map { token in
-            DeclModifierSyntax(name: token.with(\.trailingTrivia, .spaces(1)))
+            DeclModifierSyntax(name: token.with(\.trailingTrivia, .space))
         }
 
         // If originally has modifiers.

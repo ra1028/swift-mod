@@ -161,7 +161,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                     let isLast = index == storedProperties.index(before: storedProperties.endIndex)
                     return FunctionParameterSyntax(
                         firstName: property.identifierPattern.identifier.withLeadingTrivia(
-                            .newlines(1) + parameterIndentTrivia + property.identifierPattern.identifier.leadingTrivia,
+                            .newline + parameterIndentTrivia + property.identifierPattern.identifier.leadingTrivia,
                             condition: shouldLineBreakParameters
                         ),
                         colon: .colonToken(trailingTrivia: .space),
@@ -222,7 +222,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                         ),
                                         ExprSyntax(
                                             DeclReferenceExprSyntax(
-                                                baseName: property.identifierPattern.identifier.appendingTrailingTrivia(.newlines(1))
+                                                baseName: property.identifierPattern.identifier.appendingTrailingTrivia(.newline)
                                             )
                                         ),
                                     ])
