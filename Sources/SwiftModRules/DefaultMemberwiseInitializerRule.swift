@@ -207,12 +207,14 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                                         argumentNames: nil
                                                     )
                                                 ),
-                                                dot: .periodToken(),
-                                                name: property.identifierPattern
-                                                    .withoutBackticks()
-                                                    .identifier
-                                                    .trimmed,
-                                                declNameArguments: nil
+                                                period: .periodToken(),
+                                                declName: DeclReferenceExprSyntax(
+                                                    baseName: property.identifierPattern
+                                                        .withoutBackticks()
+                                                        .identifier
+                                                        .trimmed,
+                                                    argumentNames: nil
+                                                )
                                             )
                                         ),
                                         ExprSyntax(
@@ -264,21 +266,21 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
         // If originally has members.
         if let lastMemberToken = memberList.lastToken(viewMode: .sourceAccurate) {
-            let newMemberList =
-                TokenSyntax
-                .replacingTrivia(memberList, for: lastMemberToken, trailing: .newlines(2))
-                .appending(member)
-            let newMembers = members.with(\.members, newMemberList)
+            let newMembers = members.with(\.members, TokenSyntax.replacingTrivia(memberList, for: lastMemberToken, trailing: .newlines(2)) + [member])
             let newNode = replacingMembers(node, newMembers)
             return visitChildren(newNode)
         }
         else {
             let leftBrace = members.leftBrace.withTrailingNewLinews(count: 1)
             let rightBrace = members.rightBrace.with(\.leadingTrivia, .newline + parentIndentTrivia)
-            let newMembers = members.addMember(member)
-                .with(\.leftBrace, leftBrace)
-                .with(\.rightBrace, rightBrace)
-            let newNode = replacingMembers(node, newMembers)
+            var newMembers = members
+            newMembers.members = members.members + [member]
+            let newNode = replacingMembers(
+                node,
+                newMembers
+                    .with(\.leftBrace, leftBrace)
+                    .with(\.rightBrace, rightBrace)
+            )
             return visitChildren(newNode)
         }
     }
