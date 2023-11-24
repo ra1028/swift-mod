@@ -83,6 +83,16 @@ public final class DefaultAccessLevelRule: RuleDefinition {
             )
         }
 
+        public override func visit(_ node: ActorDeclSyntax) -> DeclSyntax {
+            visit(
+                node,
+                getDeclKeyword: { $0.actorKeyword },
+                getModifiers: { $0.modifiers },
+                replacingModifiers: { $0.with(\.modifiers, $1) },
+                visitChildren: super.visit
+            )
+        }
+
         public override func visit(_ node: EnumDeclSyntax) -> DeclSyntax {
             visit(
                 node,
