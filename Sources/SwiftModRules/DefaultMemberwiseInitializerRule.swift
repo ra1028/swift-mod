@@ -106,8 +106,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
         let modifiers = getModifiers(node)
         let accessLevelModifier = modifiers?.accessLevelModifier?
-            .with(\.leadingTrivia, [])
-            .with(\.trailingTrivia, [])
+            .trimmed
             .assignableToInitializer
         let members = getMembers(node)
         let memberList = members.members
