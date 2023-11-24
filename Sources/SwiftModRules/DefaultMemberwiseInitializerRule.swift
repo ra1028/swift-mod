@@ -160,16 +160,13 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                     let property = storedProperties[index]
                     let isLast = index == storedProperties.index(before: storedProperties.endIndex)
                     return FunctionParameterSyntax(
-                        attributes: [],
                         firstName: property.identifierPattern.identifier.withLeadingTrivia(
                             .newlines(1) + parameterIndentTrivia + property.identifierPattern.identifier.leadingTrivia,
                             condition: shouldLineBreakParameters
                         ),
-                        secondName: nil,
                         colon: .colonToken(trailingTrivia: .space),
                         // Assings the attributes to type if needed.
                         type: property.type.attributed(),
-                        ellipsis: nil,
                         defaultValue: property.value.map { value in
                             InitializerClauseSyntax(
                                 equal: .equalToken(leadingTrivia: .space, trailingTrivia: .space),
@@ -203,8 +200,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                             MemberAccessExprSyntax(
                                                 base: ExprSyntax(
                                                     DeclReferenceExprSyntax(
-                                                        baseName: .keyword(.self).with(\.leadingTrivia, parameterIndentTrivia),
-                                                        argumentNames: nil
+                                                        baseName: .keyword(.self).with(\.leadingTrivia, parameterIndentTrivia)
                                                     )
                                                 ),
                                                 period: .periodToken(),
@@ -212,8 +208,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                                     baseName: property.identifierPattern
                                                         .withoutBackticks()
                                                         .identifier
-                                                        .trimmed,
-                                                    argumentNames: nil
+                                                        .trimmed
                                                 )
                                             )
                                         ),
@@ -227,8 +222,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                         ),
                                         ExprSyntax(
                                             DeclReferenceExprSyntax(
-                                                baseName: property.identifierPattern.identifier.appendingTrailingTrivia(.newlines(1)),
-                                                argumentNames: nil
+                                                baseName: property.identifierPattern.identifier.appendingTrailingTrivia(.newlines(1))
                                             )
                                         ),
                                     ])
@@ -251,18 +245,14 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
         // Make initializer declaration.
         let initializerDecl = InitializerDeclSyntax(
-            attributes: [],
             modifiers: skipAccessLevel ? [] : DeclModifierListSyntax([newAcessLevelModifier]),
             initKeyword: .keyword(.`init`).withLeadingTrivia(indentTrivia, condition: skipAccessLevel),
-            optionalMark: nil,
-            genericParameterClause: nil,
             signature: FunctionSignatureSyntax(parameterClause: parameterClause),
-            genericWhereClause: nil,
             body: initializerCodeBlock
         )
 
         // Make member declatation list.
-        let member = MemberBlockItemSyntax(decl: DeclSyntax(initializerDecl), semicolon: nil)
+        let member = MemberBlockItemSyntax(decl: DeclSyntax(initializerDecl))
 
         // If originally has members.
         if let lastMemberToken = memberList.lastToken(viewMode: .sourceAccurate) {
@@ -340,7 +330,6 @@ private extension TypeSyntax {
         if self.is(FunctionTypeSyntax.self) {
             return TypeSyntax(
                 AttributedTypeSyntax(
-                    specifier: nil,
                     attributes: AttributeListSyntax([
                         .attribute(
                             AttributeSyntax(

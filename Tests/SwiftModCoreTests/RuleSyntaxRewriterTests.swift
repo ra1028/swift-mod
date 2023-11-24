@@ -9,8 +9,6 @@ final class RuleSyntaxRewriterTests: XCTestCase {
         let node = MemberBlockItemSyntax(
             decl: DeclSyntax(
                 VariableDeclSyntax(
-                    attributes: [],
-                    modifiers: [],
                     bindingSpecifier: .keyword(.let),
                     bindings: PatternBindingListSyntax([
                         PatternBindingSyntax(
@@ -19,18 +17,14 @@ final class RuleSyntaxRewriterTests: XCTestCase {
                                     identifier: .identifier("test")
                                 )
                             ),
-                            typeAnnotation: nil,
                             initializer: InitializerClauseSyntax(
                                 equal: .equalToken(),
-                                value: ExprSyntax(IntegerLiteralExprSyntax(digits: .integerLiteral("100")))
-                            ),
-                            accessorBlock: nil,
-                            trailingComma: nil
+                                value: ExprSyntax(IntegerLiteralExprSyntax(literal: .integerLiteral("100")))
+                            )
                         )
                     ])
                 )
-            ),
-            semicolon: nil
+            )
         )
 
         let notIgnoreNode = testRule.visitAny(Syntax(node))
@@ -46,8 +40,7 @@ final class RuleSyntaxRewriterTests: XCTestCase {
 
     func testIgnoreCommentForCodeBlockItem() {
         let node = CodeBlockItemSyntax(
-            item: .expr(ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("test")))),
-            semicolon: nil
+            item: .expr(ExprSyntax(DeclReferenceExprSyntax(baseName: .identifier("test"))))
         )
 
         let notIgnoreNode = testRule.visitAny(Syntax(node))
