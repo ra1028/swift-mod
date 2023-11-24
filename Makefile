@@ -7,10 +7,6 @@ GITHUB_REPO := ra1028/$(TOOL_NAME)
 DOCKER_IMAGE_NAME := swift:5.5
 
 ifeq ($(shell uname), Darwin)
-USE_SWIFT_STATIC_STDLIB := $(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo use_swift_static_stdlib_flag)
-ifeq ($(USE_SWIFT_STATIC_STDLIB), use_swift_static_stdlib_flag)
-SWIFT_BUILD_FLAGS += -Xswiftc -static-stdlib
-endif
 SWIFT_BUILD_FLAGS += --arch arm64 --arch x86_64
 endif
 
