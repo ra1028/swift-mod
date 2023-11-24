@@ -12,21 +12,16 @@
   "indentation": {
     "spaces": 4
   },
-  "blankLineBetweenMembers": {
-    "ignoreSingleLineProperties": true
-  },
   "rules": {
     "AllPublicDeclarationsHaveDocumentation": false,
     "AlwaysUseLowerCamelCase": true,
     "AmbiguousTrailingClosureOverload": true,
     "BeginDocumentationCommentWithOneLineSummary": true,
-    "BlankLineBetweenMembers": true,
     "DoNotUseSemicolons": true,
     "DontRepeatTypeInStaticProperties": true,
     "FullyIndirectEnum": true,
     "GroupNumericLiterals": true,
     "IdentifiersMustBeASCII": true,
-    "MultiLineTrailingCommas": true,
     "NeverForceUnwrap": false,
     "NeverUseForceTry": false,
     "NeverUseImplicitlyUnwrappedOptionals": true,
@@ -43,7 +38,6 @@
     "OnlyOneTrailingClosureArgument": true,
     "OrderedImports": true,
     "ReturnVoidInsteadOfEmptyTuple": true,
-    "UseEnumForNamespacing": true,
     "UseLetInEveryBoundCaseVariable": false,
     "UseShorthandTypeNames": true,
     "UseSingleLinePropertyGetter": true,
