@@ -11,17 +11,17 @@ final class RuleSyntaxRewriterTests: XCTestCase {
                 VariableDeclSyntax(
                     attributes: [],
                     modifiers: [],
-                    bindingSpecifier: TokenSyntax.keyword(.let),
+                    bindingSpecifier: .keyword(.let),
                     bindings: PatternBindingListSyntax([
                         PatternBindingSyntax(
                             pattern: PatternSyntax(
                                 IdentifierPatternSyntax(
-                                    identifier: TokenSyntax.identifier("test")
+                                    identifier: .identifier("test")
                                 )
                             ),
                             typeAnnotation: nil,
                             initializer: InitializerClauseSyntax(
-                                equal: TokenSyntax.equalToken(),
+                                equal: .equalToken(),
                                 value: ExprSyntax(IntegerLiteralExprSyntax(digits: .integerLiteral("100")))
                             ),
                             accessorBlock: nil,

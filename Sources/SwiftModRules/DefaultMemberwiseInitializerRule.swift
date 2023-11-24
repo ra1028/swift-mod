@@ -182,13 +182,13 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                     )
                 }
             ),
-            rightParen: TokenSyntax.rightParenToken()
+            rightParen: .rightParenToken()
                 .withLeadingTrivia(.newline + indentTrivia, condition: shouldLineBreakParameters)
         )
 
         // Make initializer code block.
         let initializerCodeBlock = CodeBlockSyntax(
-            leftBrace: TokenSyntax.leftBraceToken(
+            leftBrace: .leftBraceToken(
                 leadingTrivia: .space,
                 trailingTrivia: storedProperties.isEmpty ? [] : .newline
             ),
@@ -203,11 +203,11 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                             MemberAccessExprSyntax(
                                                 base: ExprSyntax(
                                                     DeclReferenceExprSyntax(
-                                                        baseName: TokenSyntax.keyword(.`self`).with(\.leadingTrivia, parameterIndentTrivia),
+                                                        baseName: .keyword(.self).with(\.leadingTrivia, parameterIndentTrivia),
                                                         argumentNames: nil
                                                     )
                                                 ),
-                                                dot: TokenSyntax.periodToken(),
+                                                dot: .periodToken(),
                                                 name: property.identifierPattern
                                                     .withoutBackticks()
                                                     .identifier
@@ -217,7 +217,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                                         ),
                                         ExprSyntax(
                                             AssignmentExprSyntax(
-                                                equal: TokenSyntax.equalToken(
+                                                equal: .equalToken(
                                                     leadingTrivia: .space,
                                                     trailingTrivia: .space
                                                 )
@@ -236,12 +236,12 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                     )
                 }
             ),
-            rightBrace: TokenSyntax.rightBraceToken()
+            rightBrace: .rightBraceToken()
                 .withLeadingTrivia(indentTrivia, condition: !storedProperties.isEmpty)
         )
 
         // Use default access level modifier or make new internal access level modifier if not present.
-        let newAcessLevelModifier = (accessLevelModifier ?? DeclModifierSyntax(name: TokenSyntax.keyword(.internal)))
+        let newAcessLevelModifier = (accessLevelModifier ?? DeclModifierSyntax(name: .keyword(.internal)))
             .with(\.leadingTrivia, indentTrivia)
             .with(\.trailingTrivia, .space)
         // Indicating whether to assign internal access level explicitly.
@@ -251,7 +251,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
         let initializerDecl = InitializerDeclSyntax(
             attributes: [],
             modifiers: skipAccessLevel ? [] : DeclModifierListSyntax([newAcessLevelModifier]),
-            initKeyword: TokenSyntax.keyword(.`init`).withLeadingTrivia(indentTrivia, condition: skipAccessLevel),
+            initKeyword: .keyword(.`init`).withLeadingTrivia(indentTrivia, condition: skipAccessLevel),
             optionalMark: nil,
             genericParameterClause: nil,
             signature: FunctionSignatureSyntax(parameterClause: parameterClause),
@@ -325,7 +325,7 @@ private extension TypeSyntax {
             return TypeSyntax(
                 OptionalTypeSyntax(
                     wrappedType: iuo.wrappedType,
-                    questionMark: TokenSyntax.postfixQuestionMarkToken()
+                    questionMark: .postfixQuestionMarkToken()
                 )
             )
         }
@@ -342,7 +342,7 @@ private extension TypeSyntax {
                     attributes: AttributeListSyntax([
                         .attribute(
                             AttributeSyntax(
-                                atSign: TokenSyntax.atSignToken(),
+                                atSign: .atSignToken(),
                                 attributeName: IdentifierTypeSyntax(name: .identifier("escaping"))
                                     .with(\.trailingTrivia, .space)
                             )
