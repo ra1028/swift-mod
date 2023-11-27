@@ -192,7 +192,7 @@ final class DefaultAccessLevelRuleTests: XCTestCase {
         )
     }
 
-    func testClassNotTriggered() throws {
+    func testClassInternalNotTriggered() throws {
         try assertRule(
             defaultRule,
             source: """
@@ -206,6 +206,94 @@ final class DefaultAccessLevelRuleTests: XCTestCase {
             expected: """
                 internal class Class {
                     class Nested {
+                        var stored: Int
+                    }
+                    var stored: Int
+                }
+                """
+        )
+    }
+
+    func testClassOpenNotTriggered() throws {
+        try assertRule(
+            defaultRule,
+            source: """
+                open class Class {}
+                """,
+            expected: """
+                open class Class {}
+                """
+        )
+    }
+
+    func testActor() throws {
+        try assertRule(
+            defaultRule,
+            source: """
+                @available(swift 5.1)
+                actor Actor {
+                    typealias TypeAlias = Int
+                    static let staticStored = 0
+                    static func staticFunction() -> Int { 0 }
+                    var stored: Int
+                    var computed: Int { 0 }
+                    internal var internalProperty: Int
+                    func function(value: Int) -> Int { value }
+                    subscript (value: Int) -> Int { value }
+                    init(variable: Int) { self.variable = variable }
+                }
+                """,
+            expected: """
+                @available(swift 5.1)
+                public actor Actor {
+                    public typealias TypeAlias = Int
+                    public static let staticStored = 0
+                    public static func staticFunction() -> Int { 0 }
+                    public var stored: Int
+                    public var computed: Int { 0 }
+                    internal var internalProperty: Int
+                    public func function(value: Int) -> Int { value }
+                    public subscript (value: Int) -> Int { value }
+                    public init(variable: Int) { self.variable = variable }
+                }
+                """
+        )
+    }
+
+    func testActorNested() throws {
+        try assertRule(
+            defaultRule,
+            source: """
+                actor Actor {
+                    actor Nested {
+                        var stored: Int
+                    }
+                }
+                """,
+            expected: """
+                public actor Actor {
+                    public actor Nested {
+                        public var stored: Int
+                    }
+                }
+                """
+        )
+    }
+
+    func testActorNotTriggered() throws {
+        try assertRule(
+            defaultRule,
+            source: """
+                internal actor Actor {
+                    actor Nested {
+                        var stored: Int
+                    }
+                    var stored: Int
+                }
+                """,
+            expected: """
+                internal actor Actor {
+                    actor Nested {
                         var stored: Int
                     }
                     var stored: Int

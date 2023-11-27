@@ -2,7 +2,7 @@ import SwiftSyntax
 
 public extension TypeSyntax {
     var isOptional: Bool {
-        if let identifier = self.as(SimpleTypeIdentifierSyntax.self), identifier.name.tokenKind.isOptional {
+        if let identifier = self.as(IdentifierTypeSyntax.self), identifier.name.tokenKind.isOptional {
             return true
         }
         else {

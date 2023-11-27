@@ -4,13 +4,9 @@ SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 GITHUB_REPO := ra1028/$(TOOL_NAME)
-DOCKER_IMAGE_NAME := swift:5.5
+DOCKER_IMAGE_NAME := swift:5.9
 
 ifeq ($(shell uname), Darwin)
-USE_SWIFT_STATIC_STDLIB := $(shell test -d $$(dirname $$(xcrun --find swift))/../lib/swift_static/macosx && echo use_swift_static_stdlib_flag)
-ifeq ($(USE_SWIFT_STATIC_STDLIB), use_swift_static_stdlib_flag)
-SWIFT_BUILD_FLAGS += -Xswiftc -static-stdlib
-endif
 SWIFT_BUILD_FLAGS += --arch arm64 --arch x86_64
 endif
 
@@ -47,7 +43,7 @@ docker-test:
 zip: build
 	install_name_tool -add_rpath @loader_path -add_rpath $(XCODE_DEFAULT_TOOLCHAIN)/usr/lib/swift/macosx $(TOOL_BIN) 2>/dev/null || true
 	rm -f $(TOOL_NAME).zip
-	zip -j $(TOOL_NAME).zip $(TOOL_BIN) $(TOOL_BIN_DIR)/lib_InternalSwiftSyntaxParser.dylib LICENSE
+	zip -j $(TOOL_NAME).zip $(TOOL_BIN) LICENSE
 
 upload-zip: zip
 	@[ -n "$(GITHUB_TOKEN)" ] || (echo "\nERROR: Make sure setting environment variable 'GITHUB_TOKEN'." && exit 1)

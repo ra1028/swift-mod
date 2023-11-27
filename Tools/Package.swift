@@ -1,10 +1,10 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.9
 
 import PackageDescription
 
 let package = Package(
     name: "Tools",
     dependencies: [
-        .package(url: "https://github.com/apple/swift-format.git", .upToNextMinor(from: "0.50700.0")),
+        .package(url: "https://github.com/apple/swift-format.git", .upToNextMinor(from: "509.0.0")),
     ]
 )

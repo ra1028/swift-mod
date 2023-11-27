@@ -7,7 +7,7 @@ public extension Indent {
             return .spaces(spaces)
 
         case .tab:
-            return .tabs(1)
+            return .tab
         }
     }
 }

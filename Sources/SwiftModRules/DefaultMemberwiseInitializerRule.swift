@@ -68,8 +68,8 @@ public final class DefaultMemberwiseInitializerRule: RuleDefinition {
             visit(
                 node,
                 getModifiers: { $0.modifiers },
-                getMembers: { $0.members },
-                replacingMembers: { $0.withMembers($1) },
+                getMembers: { $0.memberBlock },
+                replacingMembers: { $0.with(\.memberBlock, $1) },
                 visitChildren: super.visit
             )
         }
@@ -78,8 +78,8 @@ public final class DefaultMemberwiseInitializerRule: RuleDefinition {
             visit(
                 node,
                 getModifiers: { $0.modifiers },
-                getMembers: { $0.members },
-                replacingMembers: { $0.withMembers($1) },
+                getMembers: { $0.memberBlock },
+                replacingMembers: { $0.with(\.memberBlock, $1) },
                 visitChildren: super.visit
             )
         }
@@ -95,9 +95,9 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
     func visit<Node: DeclSyntaxProtocol>(
         _ node: Node,
-        getModifiers: (Node) -> ModifierListSyntax?,
-        getMembers: (Node) -> MemberDeclBlockSyntax,
-        replacingMembers: (Node, MemberDeclBlockSyntax) -> Node,
+        getModifiers: (Node) -> DeclModifierListSyntax?,
+        getMembers: (Node) -> MemberBlockSyntax,
+        replacingMembers: (Node, MemberBlockSyntax) -> Node,
         visitChildren: (Node) -> DeclSyntax
     ) -> DeclSyntax {
         let implicitInternal = options.implicitInternal ?? true
@@ -106,7 +106,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
         let modifiers = getModifiers(node)
         let accessLevelModifier = modifiers?.accessLevelModifier?
-            .withoutTrivia()
+            .trimmed
             .assignableToInitializer
         let members = getMembers(node)
         let memberList = members.members
@@ -116,15 +116,15 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
                 return nil
             }
 
-            let hasStatic = variableDecl.modifiers?.hasStatic ?? false
+            let hasStatic = variableDecl.modifiers.hasStatic
             let hasAccessor = variableDecl.hasAccessor
             let value = variableDecl.value
             // The variable that defined as `let` and already initialized once is not need a initializer parameter..
-            let isAlreadyInitialized = variableDecl.letOrVarKeyword.isLet && value != nil
+            let isAlreadyInitialized = variableDecl.bindingSpecifier.isLet && value != nil
 
             guard !hasStatic && !hasAccessor && !isAlreadyInitialized,
-                let identifierPattern = variableDecl.identifier?.withoutTrivia(),
-                let type = variableDecl.typeAnnotation?.withoutTrivia().type.transformed()
+                let identifierPattern = variableDecl.identifier?.trimmed,
+                let type = variableDecl.typeAnnotation?.trimmed.type.transformed()
             else {
                 return nil
             }
@@ -132,7 +132,7 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
             return StoredProperty(
                 identifierPattern: identifierPattern,
                 type: type,
-                value: value ?? (type.isOptional ? ExprSyntax(SyntaxFactory.makeNilExpr()) : nil)
+                value: value ?? (type.isOptional ? ExprSyntax(NilLiteralExprSyntax(nilKeyword: .keyword(.nil))) : nil)
             )
         }
 
@@ -146,141 +146,130 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
             return visitChildren(node)
         }
 
-        let parentIndentTrivia = node.firstToken?.leadingTrivia.indentation ?? Trivia()
+        let parentIndentTrivia = node.firstToken(viewMode: .sourceAccurate)?.leadingTrivia.indentation ?? Trivia()
         let indentTrivia = parentIndentTrivia + format.indent.trivia
         let parameterIndentTrivia = indentTrivia + format.indent.trivia
         let shouldLineBreakParameters = format.lineBreakBeforeEachArgument && storedProperties.count > 1
 
         // Make parameter clause.
-        let parameterClause = SyntaxFactory.makeParameterClause(
-            leftParen: SyntaxFactory.makeLeftParenToken(),
-            parameterList: SyntaxFactory.makeFunctionParameterList(
+        let parameterClause = FunctionParameterClauseSyntax(
+            leftParen: .leftParenToken(),
+            parameters: FunctionParameterListSyntax(
                 storedProperties.indices.map { index in
                     let property = storedProperties[index]
                     let isLast = index == storedProperties.index(before: storedProperties.endIndex)
-                    return SyntaxFactory.makeFunctionParameter(
-                        attributes: nil,
+                    return FunctionParameterSyntax(
                         firstName: property.identifierPattern.identifier.withLeadingTrivia(
-                            .newlines(1) + parameterIndentTrivia + property.identifierPattern.identifier.leadingTrivia,
+                            .newline + parameterIndentTrivia + property.identifierPattern.identifier.leadingTrivia,
                             condition: shouldLineBreakParameters
                         ),
-                        secondName: nil,
-                        colon: SyntaxFactory.makeColonToken().withTrailingTrivia(.spaces(1)),
+                        colon: .colonToken(trailingTrivia: .space),
                         // Assings the attributes to type if needed.
                         type: property.type.attributed(),
-                        ellipsis: nil,
-                        defaultArgument: property.value.map { value in
-                            SyntaxFactory.makeInitializerClause(
-                                equal: SyntaxFactory.makeEqualToken()
-                                    .withLeadingTrivia(.spaces(1))
-                                    .withTrailingTrivia(.spaces(1)),
+                        defaultValue: property.value.map { value in
+                            InitializerClauseSyntax(
+                                equal: .equalToken(leadingTrivia: .space, trailingTrivia: .space),
                                 value: value
                             )
                         },
                         trailingComma: isLast
                             ? nil
-                            : SyntaxFactory
-                                .makeCommaToken()
-                                .withTrailingTrivia(.spaces(1), condition: !shouldLineBreakParameters)
+                            : .commaToken().withTrailingTrivia(.space, condition: !shouldLineBreakParameters)
                     )
                 }
             ),
-            rightParen: SyntaxFactory.makeRightParenToken().withLeadingTrivia(.newlines(1) + indentTrivia, condition: shouldLineBreakParameters)
+            rightParen: .rightParenToken()
+                .withLeadingTrivia(.newline + indentTrivia, condition: shouldLineBreakParameters)
         )
 
         // Make initializer code block.
-        let initializerCodeBlock = SyntaxFactory.makeCodeBlock(
-            leftBrace: SyntaxFactory.makeLeftBraceToken()
-                .withLeadingTrivia(.spaces(1))
-                .withTrailingTrivia(storedProperties.isEmpty ? [] : .newlines(1)),
-            statements: SyntaxFactory.makeCodeBlockItemList(
+        let initializerCodeBlock = CodeBlockSyntax(
+            leftBrace: .leftBraceToken(
+                leadingTrivia: .space,
+                trailingTrivia: storedProperties.isEmpty ? [] : .newline
+            ),
+            statements: CodeBlockItemListSyntax(
                 storedProperties.map { property in
-                    SyntaxFactory.makeCodeBlockItem(
-                        item: Syntax(
-                            SyntaxFactory.makeSequenceExpr(
-                                elements: SyntaxFactory.makeExprList([
-                                    ExprSyntax(
-                                        SyntaxFactory.makeMemberAccessExpr(
-                                            base: ExprSyntax(
-                                                SyntaxFactory.makeIdentifierExpr(
-                                                    identifier: SyntaxFactory.makeSelfKeyword().withLeadingTrivia(parameterIndentTrivia),
-                                                    declNameArguments: nil
+                    CodeBlockItemSyntax(
+                        item: .expr(
+                            ExprSyntax(
+                                SequenceExprSyntax(
+                                    elements: ExprListSyntax([
+                                        ExprSyntax(
+                                            MemberAccessExprSyntax(
+                                                base: ExprSyntax(
+                                                    DeclReferenceExprSyntax(
+                                                        baseName: .keyword(.self).with(\.leadingTrivia, parameterIndentTrivia)
+                                                    )
+                                                ),
+                                                period: .periodToken(),
+                                                declName: DeclReferenceExprSyntax(
+                                                    baseName: property.identifierPattern
+                                                        .withoutBackticks()
+                                                        .identifier
+                                                        .trimmed
                                                 )
-                                            ),
-                                            dot: SyntaxFactory.makePeriodToken(),
-                                            name: property.identifierPattern
-                                                .withoutBackticks()
-                                                .identifier
-                                                .withoutTrivia(),
-                                            declNameArguments: nil
-                                        )
-                                    ),
-                                    ExprSyntax(
-                                        SyntaxFactory.makeAssignmentExpr(
-                                            assignToken: SyntaxFactory.makeEqualToken(
-                                                leadingTrivia: .spaces(1),
-                                                trailingTrivia: .spaces(1)
                                             )
-                                        )
-                                    ),
-                                    ExprSyntax(
-                                        SyntaxFactory.makeIdentifierExpr(
-                                            identifier: property.identifierPattern.identifier.appendingTrailingTrivia(.newlines(1)),
-                                            declNameArguments: nil
-                                        )
-                                    ),
-                                ])
+                                        ),
+                                        ExprSyntax(
+                                            AssignmentExprSyntax(
+                                                equal: .equalToken(
+                                                    leadingTrivia: .space,
+                                                    trailingTrivia: .space
+                                                )
+                                            )
+                                        ),
+                                        ExprSyntax(
+                                            DeclReferenceExprSyntax(
+                                                baseName: property.identifierPattern.identifier.appendingTrailingTrivia(.newline)
+                                            )
+                                        ),
+                                    ])
+                                )
                             )
-                        ),
-                        semicolon: nil,
-                        errorTokens: nil
+                        )
                     )
                 }
             ),
-            rightBrace: SyntaxFactory.makeRightBraceToken()
+            rightBrace: .rightBraceToken()
                 .withLeadingTrivia(indentTrivia, condition: !storedProperties.isEmpty)
         )
 
         // Use default access level modifier or make new internal access level modifier if not present.
-        let newAcessLevelModifier = (accessLevelModifier ?? SyntaxFactory.makeDeclModifier(name: SyntaxFactory.makeInternalKeyword()))
-            .withLeadingTrivia(indentTrivia)
-            .withTrailingTrivia(.spaces(1))
+        let newAcessLevelModifier = (accessLevelModifier ?? DeclModifierSyntax(name: .keyword(.internal)))
+            .with(\.leadingTrivia, indentTrivia)
+            .with(\.trailingTrivia, .space)
         // Indicating whether to assign internal access level explicitly.
         let skipAccessLevel = newAcessLevelModifier.name.isInternal && implicitInternal
 
         // Make initializer declaration.
-        let initializerDecl = SyntaxFactory.makeInitializerDecl(
-            attributes: nil,
-            modifiers: skipAccessLevel ? nil : SyntaxFactory.makeModifierList([newAcessLevelModifier]),
-            initKeyword: SyntaxFactory.makeInitKeyword().withLeadingTrivia(indentTrivia, condition: skipAccessLevel),
-            optionalMark: nil,
-            genericParameterClause: nil,
-            parameters: parameterClause,
-            throwsOrRethrowsKeyword: nil,
-            genericWhereClause: nil,
+        let initializerDecl = InitializerDeclSyntax(
+            modifiers: skipAccessLevel ? [] : DeclModifierListSyntax([newAcessLevelModifier]),
+            initKeyword: .keyword(.`init`).withLeadingTrivia(indentTrivia, condition: skipAccessLevel),
+            signature: FunctionSignatureSyntax(parameterClause: parameterClause),
             body: initializerCodeBlock
         )
 
         // Make member declatation list.
-        let member = SyntaxFactory.makeMemberDeclListItem(decl: DeclSyntax(initializerDecl), semicolon: nil)
+        let member = MemberBlockItemSyntax(decl: DeclSyntax(initializerDecl))
 
         // If originally has members.
-        if let lastMemberToken = memberList.lastToken {
-            let newMemberList =
-                SyntaxFactory
-                .replacingTrivia(memberList, for: lastMemberToken, trailing: .newlines(2))
-                .appending(member)
-            let newMembers = members.withMembers(newMemberList)
+        if let lastMemberToken = memberList.lastToken(viewMode: .sourceAccurate) {
+            let newMembers = members.with(\.members, TokenSyntax.replacingTrivia(memberList, for: lastMemberToken, trailing: .newlines(2)) + [member])
             let newNode = replacingMembers(node, newMembers)
             return visitChildren(newNode)
         }
         else {
             let leftBrace = members.leftBrace.withTrailingNewLinews(count: 1)
-            let rightBrace = members.rightBrace.withLeadingTrivia(.newlines(1) + parentIndentTrivia)
-            let newMembers = members.addMember(member)
-                .withLeftBrace(leftBrace)
-                .withRightBrace(rightBrace)
-            let newNode = replacingMembers(node, newMembers)
+            let rightBrace = members.rightBrace.with(\.leadingTrivia, .newline + parentIndentTrivia)
+            var newMembers = members
+            newMembers.members = members.members + [member]
+            let newNode = replacingMembers(
+                node,
+                newMembers
+                    .with(\.leftBrace, leftBrace)
+                    .with(\.rightBrace, rightBrace)
+            )
             return visitChildren(newNode)
         }
     }
@@ -288,31 +277,31 @@ private extension DefaultMemberwiseInitializerRule.Rewriter {
 
 private extension TokenSyntax {
     var isLet: Bool {
-        tokenKind == .letKeyword
+        tokenKind == .keyword(.let)
     }
 
     var isInternal: Bool {
-        tokenKind == .internalKeyword
+        tokenKind == .keyword(.internal)
     }
 
     func withTrailingNewLinews(count: Int) -> TokenSyntax {
         let newlines = trailingTrivia.numberOfNewlines
-        return newlines >= count ? self : withTrailingTrivia(.newlines(count - newlines))
+        return newlines >= count ? self : with(\.trailingTrivia, .newlines(count - newlines))
     }
 
     func withLeadingNewlines(count: Int) -> TokenSyntax {
         let newlines = leadingTrivia.numberOfNewlines
-        return newlines >= count ? self : withLeadingTrivia(.newlines(count - newlines))
+        return newlines >= count ? self : with(\.leadingTrivia, .newlines(count - newlines))
     }
 }
 
 private extension DeclModifierSyntax {
     var assignableToInitializer: DeclModifierSyntax? {
         switch name.tokenKind {
-        case .openKeyward:
-            return withName(SyntaxFactory.makePublicKeyword())
+        case .keyword(.open):
+            return with(\.name, .keyword(.public))
 
-        case .publicKeyword:
+        case .keyword(.public):
             return self
 
         default:
@@ -325,9 +314,9 @@ private extension TypeSyntax {
     func transformed() -> TypeSyntax {
         if let iuo = self.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
             return TypeSyntax(
-                SyntaxFactory.makeOptionalType(
+                OptionalTypeSyntax(
                     wrappedType: iuo.wrappedType,
-                    questionMark: SyntaxFactory.makePostfixQuestionMarkToken()
+                    questionMark: .postfixQuestionMarkToken()
                 )
             )
         }
@@ -339,14 +328,14 @@ private extension TypeSyntax {
     func attributed() -> TypeSyntax {
         if self.is(FunctionTypeSyntax.self) {
             return TypeSyntax(
-                SyntaxFactory.makeAttributedType(
-                    specifier: nil,
-                    attributes: SyntaxFactory.makeAttributeList([
-                        Syntax(
-                            AttributeSyntax { builder in
-                                builder.useAtSignToken(SyntaxFactory.makeAtSignToken())
-                                builder.useAttributeName(SyntaxFactory.makeIdentifier("escaping").withTrailingTrivia(.spaces(1)))
-                            }
+                AttributedTypeSyntax(
+                    attributes: AttributeListSyntax([
+                        .attribute(
+                            AttributeSyntax(
+                                atSign: .atSignToken(),
+                                attributeName: IdentifierTypeSyntax(name: .identifier("escaping"))
+                                    .with(\.trailingTrivia, .space)
+                            )
                         )
                     ]),
                     baseType: self
