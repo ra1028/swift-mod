@@ -301,7 +301,7 @@ You can also install swift-mod by downloading `swift-mod.zip` from the latest Gi
 
 ### Swift Version Support
 
-`swift-mod` depends on [SwiftSyntax](https://github.com/apple/swift-syntax) that the version in use must match the toolchain version.  
+`swift-mod` depends on [SwiftSyntax](https://github.com/apple/swift-syntax) that the version in use must match the toolchain version until Swift 5.7.  
 So you should use swift-mod version that built with compatible version of Swift you are using.  
 
 |Swift Version|Last Supported swift-mod Release|
@@ -312,7 +312,8 @@ So you should use swift-mod version that built with compatible version of Swift 
 |5.4          |0.0.6                           |
 |5.5          |0.0.7                           |
 |5.6          |0.1.0                           |
-|5.7          |latest                          |
+|5.7          |0.1.1                           |
+|5.8 and later|latest                          |
 
 ---
 
