@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 
 import PackageDescription
 
@@ -14,10 +14,10 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser", .upToNextMinor(from: "1.1.2")),
-        .package(url: "https://github.com/apple/swift-syntax", .upToNextMinor(from: "509.0.1")),
-        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.2.3"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.0")
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.5.0")),
+        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMinor(from: "510.0.3")),
+        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.7.1"),
+        .package(url: "https://github.com/jpsim/Yams.git", from: "5.1.3")
     ],
     targets: [
         .executableTarget(
