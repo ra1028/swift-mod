@@ -28,7 +28,7 @@ public final class InMemoryFileManager: FileManagerProtocol {
 
     public func createFile(atPath path: String) -> Bool {
         do {
-            try fileSystem.writeFileContents(AbsolutePath(path), bytes: ByteString())
+            try fileSystem.writeFileContents(AbsolutePath(validating: path), bytes: ByteString())
             return true
         }
         catch {

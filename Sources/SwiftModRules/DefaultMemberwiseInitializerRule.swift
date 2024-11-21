@@ -329,6 +329,7 @@ private extension TypeSyntax {
         if self.is(FunctionTypeSyntax.self) {
             return TypeSyntax(
                 AttributedTypeSyntax(
+                    specifiers: [],
                     attributes: AttributeListSyntax([
                         .attribute(
                             AttributeSyntax(

@@ -27,7 +27,7 @@ public final class InteractiveWriter: InteractiveWriterProtocol {
             term.write(string, inColor: color, bold: bold)
         }
         else {
-            stream <<< string
+            stream.send(string)
             stream.flush()
         }
     }

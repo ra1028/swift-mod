@@ -10,7 +10,7 @@ public enum Mode: String, CaseIterable, ExpressibleByArgument {
 extension AbsolutePath: ExpressibleByArgument {
     public init?(argument: String) {
         if let cwd = localFileSystem.currentWorkingDirectory {
-            self.init(argument, relativeTo: cwd)
+            try? self.init(validating: argument, relativeTo: cwd)
         }
         else {
             try? self.init(validating: argument)
