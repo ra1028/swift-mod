@@ -1,5 +1,5 @@
 {
-  "originHash" : "7bed6f5b25d8dd120c850e0157a5c045a3ace3b0e4e456481daa07ee470368b0",
+  "originHash" : "7b87ceb41a0f3350b9201125895daf78c4f6a14bddd14dbaba4001f12762f213",
   "pins" : [
     {
       "identity" : "swift-argument-parser",
@@ -22,7 +22,7 @@
     {
       "identity" : "swift-format",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-format.git",
+      "location" : "https://github.com/swiftlang/swift-format.git",
       "state" : {
         "revision" : "7996ac678197d293f6c088a1e74bb778b4e10139",
         "version" : "510.1.0"

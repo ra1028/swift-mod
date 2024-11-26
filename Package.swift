@@ -14,10 +14,10 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "1.5.0")),
-        .package(url: "https://github.com/apple/swift-syntax.git", .upToNextMinor(from: "510.0.3")),
-        .package(url: "https://github.com/apple/swift-tools-support-core.git", from: "0.7.1"),
-        .package(url: "https://github.com/jpsim/Yams.git", from: "5.1.3")
+        .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.5.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "510.0.3"),
+        .package(url: "https://github.com/swiftlang/swift-tools-support-core.git", exact: "0.7.1"),
+        .package(url: "https://github.com/jpsim/Yams.git", exact: "5.1.3")
     ],
     targets: [
         .executableTarget(
