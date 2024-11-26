@@ -9,7 +9,7 @@ final class InitCommandTests: XCTestCase {
     func testRun() throws {
         let fileSystem = InMemoryFileSystem()
         let fileManager = InMemoryFileManager(fileSystem: fileSystem)
-        let output = AbsolutePath("/home/cwd/output/.swift-mod.yml")
+        let output = try AbsolutePath(validating: "/home/cwd/output/.swift-mod.yml")
         let runner = InitCommandRunner(
             output: output,
             fileSystem: fileSystem,

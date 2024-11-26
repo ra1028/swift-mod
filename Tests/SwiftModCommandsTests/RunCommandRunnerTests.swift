@@ -27,28 +27,28 @@ final class RunCommandRunnerTests: XCTestCase {
                 )
             ]
         )
-        let configurationPath = AbsolutePath("/home/cwd/.swift-mod.yml")
+        let configurationPath = try AbsolutePath(validating: "/home/cwd/.swift-mod.yml")
 
-        try fileSystem.createDirectory(AbsolutePath("/home/cwd/test"), recursive: true)
+        try fileSystem.createDirectory(AbsolutePath(validating: "/home/cwd/test"), recursive: true)
         try fileSystem.writeFileContents(
             configurationPath,
             bytes: ByteString(encodingAsUTF8: try YAMLEncoder().encode(configuration))
         )
         try fileSystem.writeFileContents(
-            AbsolutePath("/home/cwd/test/file1.swift"),
+            AbsolutePath(validating: "/home/cwd/test/file1.swift"),
             bytes: #"let cat = "meow""#
         )
         try fileSystem.writeFileContents(
-            AbsolutePath("/home/cwd/test/file2.swift"),
+            AbsolutePath(validating: "/home/cwd/test/file2.swift"),
             bytes: #"let dog = "woof""#
         )
 
-        let runner = RunCommandRunner(
+        let runner = try RunCommandRunner(
             configuration: configurationPath,
             mode: .modify,
             paths: [
-                AbsolutePath("/home/cwd/test/file1.swift"),
-                AbsolutePath("/home/cwd/test/file2.swift"),
+                AbsolutePath(validating: "/home/cwd/test/file1.swift"),
+                AbsolutePath(validating: "/home/cwd/test/file2.swift"),
             ],
             fileSystem: fileSystem,
             fileManager: fileManager,
@@ -57,11 +57,11 @@ final class RunCommandRunnerTests: XCTestCase {
         try runner.run()
 
         XCTAssertEqual(
-            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file1.swift")),
+            try fileSystem.readFileContents(AbsolutePath(validating: "/home/cwd/test/file1.swift")),
             #"public let cat = "meow""#
         )
         XCTAssertEqual(
-            try fileSystem.readFileContents(AbsolutePath("/home/cwd/test/file2.swift")),
+            try fileSystem.readFileContents(AbsolutePath(validating: "/home/cwd/test/file2.swift")),
             #"public let dog = "woof""#
         )
     }

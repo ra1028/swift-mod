@@ -13,7 +13,7 @@ A tool for Swift code modification intermediating between code generation and fo
 
 `swift-mod` is a tool for Swift code modification that intermediating between code generator and formatter built on top of [apple/SwiftSyntax](https://github.com/apple/swift-syntax).  
 It can generates boilerplate code, such as access control or memberwise initializers in modularized source code, taking into account the state of the [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree).  
-You can improve your productivity for writing more advanced Swift codes with introducing `swift-mod`.  
+You can improve your productivity for writing more advanced Swift codes by introducing `swift-mod`.  
 
 ### Example
 
@@ -301,10 +301,10 @@ You can also install swift-mod by downloading `swift-mod.zip` from the latest Gi
 
 ### Swift Version Support
 
-`swift-mod` depends on [SwiftSyntax](https://github.com/apple/swift-syntax) that the version in use must match the toolchain version until Swift 5.7.  
-So you should use swift-mod version that built with compatible version of Swift you are using.  
+`swift-mod` depends on [SwiftSyntax](https://github.com/apple/swift-syntax) version that matches the toolchain version in use.  
+So you should use swift-mod version that built with compatible version of Swift you are using.
 
-|Swift Version|Last Supported swift-mod Release|
+|Swift Version|Last Supported `swift-mod`      |
 |:------------|:-------------------------------|
 |5.1          |0.0.2                           |
 |5.2          |0.0.4                           |
@@ -313,7 +313,9 @@ So you should use swift-mod version that built with compatible version of Swift 
 |5.5          |0.0.7                           |
 |5.6          |0.1.0                           |
 |5.7          |0.1.1                           |
-|5.8 and later|latest                          |
+|5.8          |0.2.0                           |
+|5.9          |0.2.0                           |
+|5.10         |0.2.1                           |
 
 ---
 
