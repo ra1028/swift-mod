@@ -3,7 +3,7 @@ import SwiftModCommands
 
 @main
 struct SwiftMod: ParsableCommand {
-    static var configuration = CommandConfiguration(
+    static let configuration = CommandConfiguration(
         commandName: "swift-mod",
         abstract: "Modifies Swift source code with rules",
         subcommands: [

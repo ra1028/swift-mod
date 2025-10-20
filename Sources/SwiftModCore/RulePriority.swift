@@ -1,4 +1,4 @@
-public struct RulePriority: RawRepresentable, Comparable {
+public struct RulePriority: RawRepresentable, Comparable, Sendable {
     public var rawValue: Int
 
     public static let high = RulePriority(rawValue: 1000)

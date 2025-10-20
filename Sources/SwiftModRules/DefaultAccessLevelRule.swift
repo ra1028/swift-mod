@@ -42,7 +42,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
             """
     )
 
-    public enum AccessLebel: String, Codable {
+    public enum AccessLebel: String, Codable, Sendable {
         case openOrPublic
         case `public`
         case `internal`
@@ -50,7 +50,7 @@ public final class DefaultAccessLevelRule: RuleDefinition {
         case `private`
     }
 
-    public struct Options: Codable {
+    public struct Options: Codable, Sendable {
         public var accessLevel: AccessLebel
         public var implicitInternal: Bool?
 

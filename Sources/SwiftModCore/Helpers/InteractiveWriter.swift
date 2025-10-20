@@ -1,4 +1,5 @@
 import TSCBasic
+@preconcurrency import TSCLibc
 
 public protocol InteractiveWriterProtocol {
     func write(_ string: String, inColor color: TerminalController.Color, bold: Bool)
@@ -10,7 +11,7 @@ public extension InteractiveWriterProtocol {
     }
 }
 
-public final class InteractiveWriter: InteractiveWriterProtocol {
+public final class InteractiveWriter: InteractiveWriterProtocol, @unchecked Sendable {
     public static let stdout = InteractiveWriter(stream: stdoutStream)
     public static let stderr = InteractiveWriter(stream: stderrStream)
 
@@ -30,6 +31,26 @@ public final class InteractiveWriter: InteractiveWriterProtocol {
             stream.send(string)
             stream.flush()
         }
+    }
+}
+
+private extension InteractiveWriter {
+    nonisolated(unsafe) static var stdoutStream: ThreadSafeOutputByteStream {
+        try! ThreadSafeOutputByteStream(
+            LocalFileOutputByteStream(
+                filePointer: TSCLibc.stdout,
+                closeOnDeinit: false
+            )
+        )
+    }
+
+    nonisolated(unsafe) static var stderrStream: ThreadSafeOutputByteStream {
+        try! ThreadSafeOutputByteStream(
+            LocalFileOutputByteStream(
+                filePointer: TSCLibc.stderr,
+                closeOnDeinit: false
+            )
+        )
     }
 }
 

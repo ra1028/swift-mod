@@ -4,7 +4,7 @@ import SwiftModCore
 import TSCBasic
 
 public struct RunCommand: ParsableCommand {
-    public static var configuration = CommandConfiguration(
+    public static let configuration = CommandConfiguration(
         commandName: "run",
         abstract: "Runs modification."
     )

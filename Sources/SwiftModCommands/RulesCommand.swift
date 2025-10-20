@@ -2,7 +2,7 @@ import ArgumentParser
 import SwiftModCore
 
 public struct RulesCommand: ParsableCommand {
-    public static var configuration = CommandConfiguration(
+    public static let configuration = CommandConfiguration(
         commandName: "rules",
         abstract: "Display the list of rules."
     )

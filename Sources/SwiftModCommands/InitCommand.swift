@@ -3,7 +3,7 @@ import Foundation
 import TSCBasic
 
 public struct InitCommand: ParsableCommand {
-    public static var configuration = CommandConfiguration(
+    public static let configuration = CommandConfiguration(
         commandName: "init",
         abstract: "Generates a modify configuration file."
     )

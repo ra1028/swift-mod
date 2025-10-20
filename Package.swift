@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.1
 
 import PackageDescription
 
@@ -11,13 +11,13 @@ let package = Package(
         .executable(
             name: "swift-mod",
             targets: ["swift-mod"]
-        )
+        ),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.5.0"),
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "510.0.3"),
-        .package(url: "https://github.com/swiftlang/swift-tools-support-core.git", exact: "0.7.1"),
-        .package(url: "https://github.com/jpsim/Yams.git", exact: "5.1.3")
+        .package(url: "https://github.com/apple/swift-argument-parser.git", exact: "1.5.1"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", exact: "601.0.1"),
+        .package(url: "https://github.com/swiftlang/swift-tools-support-core.git", exact: "0.7.3"),
+        .package(url: "https://github.com/jpsim/Yams.git", exact: "6.0.1")
     ],
     targets: [
         .executableTarget(
@@ -56,5 +56,5 @@ let package = Package(
             dependencies: ["SwiftModCore"]
         ),
     ],
-    swiftLanguageVersions: [.v5]
+    swiftLanguageModes: [.v6]
 )

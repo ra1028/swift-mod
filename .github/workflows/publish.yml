@@ -6,11 +6,11 @@ on:
 jobs:
   publish:
     name: Publish
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       matrix:
         xcode_version:
-          - "15.4"
+          - "16.4"
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
     steps:

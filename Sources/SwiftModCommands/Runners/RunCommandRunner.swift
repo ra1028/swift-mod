@@ -5,7 +5,7 @@ import SwiftSyntax
 import TSCBasic
 import Yams
 
-internal struct RunCommandRunner {
+internal struct RunCommandRunner: @unchecked Sendable {
     enum Error: Swift.Error, CustomStringConvertible {
         case readOrParseFileFailed(path: AbsolutePath, error: Swift.Error)
         case writeFileContentsFailed(path: AbsolutePath, error: Swift.Error)
@@ -109,7 +109,7 @@ private extension RunCommandRunner {
                     let modifiedSyntax: Syntax
 
                     do {
-                        source = try self.fileSystem.readFileContents(path).cString
+                        source = try fileSystem.readFileContents(path).cString
                         syntax = Syntax(Parser.parse(source: source))
                         modifiedSyntax = pipeline.visit(syntax)
                     }

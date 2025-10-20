@@ -3,7 +3,7 @@ import SwiftModCore
 import XCTest
 import Yams
 
-func assertConfigurationCoding(_ configuration: Configuration, file: StaticString = #file, line: UInt = #line) {
+func assertConfigurationCoding(_ configuration: Configuration, file: StaticString = #filePath, line: UInt = #line) {
     do {
         let encoded = try YAMLEncoder().encode(configuration)
         let decoded = try YAMLDecoder().decode(Configuration.self, from: encoded)

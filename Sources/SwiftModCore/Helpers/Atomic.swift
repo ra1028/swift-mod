@@ -1,6 +1,6 @@
 import Foundation
 
-public final class Atomic<Value> {
+public final class Atomic<Value>: @unchecked Sendable {
     public var value: Value {
         get { modify { $0 } }
         set { modify { $0 = newValue } }

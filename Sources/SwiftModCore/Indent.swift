@@ -1,4 +1,4 @@
-public enum Indent: Codable, Equatable {
+public enum Indent: Codable, Equatable, Sendable {
     case spaces(Int)
     case tab
 

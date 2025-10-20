@@ -3,7 +3,7 @@ import SwiftModRules
 import TSCBasic
 
 public extension Configuration {
-    static let template: Configuration = {
+    nonisolated(unsafe) static let template: Configuration = {
         let format = Format(
             indent: .spaces(4),
             lineBreakBeforeEachArgument: true

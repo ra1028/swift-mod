@@ -1,12 +1,12 @@
-public struct RuleDescription {
+public struct RuleDescription: Sendable {
     public var name: String
     public var priority: RulePriority
     public var overview: String
-    public var exampleOptions: DynamicEncodable
+    nonisolated(unsafe) public var exampleOptions: DynamicEncodable
     public var exampleBefore: String
     public var exampleAfter: String
 
-    public init<Options: Encodable>(
+    public init<Options: Sendable & Encodable>(
         name: String,
         priority: RulePriority,
         overview: String,
@@ -17,7 +17,11 @@ public struct RuleDescription {
         self.name = name
         self.priority = priority
         self.overview = overview
-        self.exampleOptions = DynamicEncodable(encode: exampleOptions.encode)
+        self.exampleOptions = DynamicEncodable(
+            encode: { encoder in
+                try exampleOptions.encode(to: encoder)
+            }
+        )
         self.exampleBefore = exampleBefore
         self.exampleAfter = exampleAfter
     }

@@ -4,7 +4,7 @@ SWIFT_BUILD_FLAGS := -c release --disable-sandbox
 TOOL_NAME := swift-mod
 XCODE_DEFAULT_TOOLCHAIN := /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain
 GITHUB_REPO := ra1028/$(TOOL_NAME)
-DOCKER_IMAGE_NAME := swift:5.10
+DOCKER_IMAGE_NAME := swift:6.1
 
 ifeq ($(shell uname), Darwin)
 SWIFT_BUILD_FLAGS += --arch arm64 --arch x86_64

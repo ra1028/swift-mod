@@ -51,7 +51,7 @@ public final class DefaultMemberwiseInitializerRule: RuleDefinition {
             """
     )
 
-    public struct Options: Codable {
+    public struct Options: Codable, Sendable {
         public var implicitInitializer: Bool?
         public var implicitInternal: Bool?
         public var ignoreClassesWithInheritance: Bool?
@@ -329,6 +329,8 @@ private extension TypeSyntax {
         if self.is(FunctionTypeSyntax.self) {
             return TypeSyntax(
                 AttributedTypeSyntax(
+                    leadingTrivia: nil,
+                    specifiers: [],
                     attributes: AttributeListSyntax([
                         .attribute(
                             AttributeSyntax(
@@ -338,7 +340,8 @@ private extension TypeSyntax {
                             )
                         )
                     ]),
-                    baseType: self
+                    baseType: self,
+                    trailingTrivia: nil
                 )
             )
         }

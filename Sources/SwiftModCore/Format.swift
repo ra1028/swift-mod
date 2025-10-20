@@ -1,4 +1,4 @@
-public struct Format: Codable, Equatable {
+public struct Format: Codable, Equatable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case indent
         case lineBreakBeforeEachArgument

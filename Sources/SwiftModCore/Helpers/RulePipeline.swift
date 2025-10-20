@@ -1,6 +1,6 @@
 import SwiftSyntax
 
-public struct RulePipeline {
+public struct RulePipeline: @unchecked Sendable {
     private let rules: ContiguousArray<Rule>
 
     public init<S: Sequence>(_ rules: S) where S.Element == Rule {
