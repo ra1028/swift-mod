@@ -35,19 +35,23 @@ public final class InteractiveWriter: InteractiveWriterProtocol, @unchecked Send
 }
 
 private extension InteractiveWriter {
-    nonisolated(unsafe) static var stdoutStream: ThreadSafeOutputByteStream = try! ThreadSafeOutputByteStream(
-        LocalFileOutputByteStream(
-            filePointer: TSCLibc.stdout,
-            closeOnDeinit: false
+    nonisolated(unsafe) static var stdoutStream: ThreadSafeOutputByteStream {
+        try! ThreadSafeOutputByteStream(
+            LocalFileOutputByteStream(
+                filePointer: TSCLibc.stdout,
+                closeOnDeinit: false
+            )
         )
-    )
+    }
 
-    nonisolated(unsafe) static var stderrStream: ThreadSafeOutputByteStream = try! ThreadSafeOutputByteStream(
-        LocalFileOutputByteStream(
-            filePointer: TSCLibc.stderr,
-            closeOnDeinit: false
+    nonisolated(unsafe) static var stderrStream: ThreadSafeOutputByteStream {
+        try! ThreadSafeOutputByteStream(
+            LocalFileOutputByteStream(
+                filePointer: TSCLibc.stderr,
+                closeOnDeinit: false
+            )
         )
-    )
+    }
 }
 
 public final class InMemoryInteractiveWriter: InteractiveWriterProtocol {
