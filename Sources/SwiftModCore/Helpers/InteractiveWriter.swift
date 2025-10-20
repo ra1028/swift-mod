@@ -1,5 +1,5 @@
 import TSCBasic
-import TSCLibc
+@preconcurrency import TSCLibc
 
 public protocol InteractiveWriterProtocol {
     func write(_ string: String, inColor color: TerminalController.Color, bold: Bool)
