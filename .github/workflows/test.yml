@@ -11,7 +11,7 @@ jobs:
     name: Test on Linux
     runs-on: ubuntu-22.04
     container:
-      image: swift:6.1
+      image: swift:6.3
     steps:
       - uses: actions/checkout@v2
       - name: Show Environments
@@ -26,11 +26,11 @@ jobs:
         run: make test
   macOS:
     name: Test on macOS
-    runs-on: macos-15
+    runs-on: macos-26
     strategy:
       matrix:
         xcode_version:
-          - "16.4"
+          - "26.5"
     env:
       DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode_version }}.app
     steps:
