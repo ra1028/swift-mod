@@ -11,7 +11,7 @@ jobs:
     name: Test on Linux
     runs-on: ubuntu-22.04
     container:
-      image: swift:6.1
+      image: swift:6.3
     steps:
       - uses: actions/checkout@v2
       - name: Show Environments
